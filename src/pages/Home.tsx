@@ -5,6 +5,7 @@ import { DocumentUpload } from "@/components/DocumentUpload";
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, FileText, Globe, Phone, BookOpen, Newspaper } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ScrollReveal, StaggerReveal } from "@/hooks/useScrollAnimation";
 
 const quickNavItems = [
   {
@@ -61,16 +62,22 @@ const Home = () => {
       {/* Quick Navigation Section */}
       <section className="section-padding bg-background">
         <div className="container">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Quick Navigation
-            </h2>
-            <p className="text-muted-foreground">
-              Find what you're looking for quickly with our organized sections
-            </p>
-          </div>
+          <ScrollReveal animation="fade-up">
+            <div className="text-center max-w-3xl mx-auto mb-12">
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4">
+                Quick Navigation
+              </h2>
+              <p className="text-muted-foreground">
+                Find what you're looking for quickly with our organized sections
+              </p>
+            </div>
+          </ScrollReveal>
           
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <StaggerReveal
+            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            staggerDelay={100}
+            animation="fade-up"
+          >
             {quickNavItems.map((item, index) => (
               <Link
                 key={index}
@@ -91,27 +98,35 @@ const Home = () => {
                 </div>
               </Link>
             ))}
-          </div>
+          </StaggerReveal>
         </div>
       </section>
 
       {/* Application Status Checker */}
-      <ApplicationStatusChecker />
+      <ScrollReveal animation="fade-up">
+        <ApplicationStatusChecker />
+      </ScrollReveal>
 
       {/* Document Upload & Appointment Section */}
       <section className="section-padding bg-muted/30">
         <div className="container">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Manage Your Application
-            </h2>
-            <p className="text-muted-foreground">
-              Upload documents or book an appointment at any GIS office
-            </p>
-          </div>
+          <ScrollReveal animation="fade-up">
+            <div className="text-center max-w-3xl mx-auto mb-12">
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4">
+                Manage Your Application
+              </h2>
+              <p className="text-muted-foreground">
+                Upload documents or book an appointment at any GIS office
+              </p>
+            </div>
+          </ScrollReveal>
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <DocumentUpload />
-            <AppointmentBooking />
+            <ScrollReveal animation="fade-right" delay={100}>
+              <DocumentUpload />
+            </ScrollReveal>
+            <ScrollReveal animation="fade-left" delay={200}>
+              <AppointmentBooking />
+            </ScrollReveal>
           </div>
         </div>
       </section>
