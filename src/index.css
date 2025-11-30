@@ -7,7 +7,7 @@
 @layer base {
   :root {
     /* Ghana Government Professional Palette - Green Theme */
-    --background: 210 20% 98%;
+    --background: 150 25% 97%;
     --foreground: 155 50% 10%;
 
     --card: 0 0% 100%;
@@ -59,6 +59,8 @@
     --gradient-hero: linear-gradient(135deg, hsl(155 100% 21%) 0%, hsl(155 70% 30%) 50%, hsl(155 80% 25%) 100%);
     --gradient-gold: linear-gradient(135deg, hsl(45 93% 58%) 0%, hsl(45 93% 47%) 100%);
     --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.9) 0%, hsl(0 0% 100% / 0.7) 100%);
+    --gradient-background: linear-gradient(180deg, hsl(150 30% 98%) 0%, hsl(155 25% 95%) 50%, hsl(150 20% 97%) 100%);
+    --gradient-background-radial: radial-gradient(ellipse at top, hsl(155 30% 96%) 0%, hsl(150 20% 98%) 50%, hsl(155 25% 96%) 100%);
 
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 hsl(var(--glass-shadow));
@@ -68,6 +70,8 @@
     --shadow-glass: 0 8px 32px 0 hsl(155 100% 21% / 0.15);
     --shadow-gold: 0 4px 20px 0 hsl(45 93% 58% / 0.3);
     --shadow-green: 0 4px 20px 0 hsl(155 100% 21% / 0.3);
+    --shadow-click: 0 2px 8px 0 hsl(155 100% 21% / 0.4), inset 0 1px 2px hsl(155 100% 21% / 0.1);
+    --shadow-active: 0 1px 3px 0 hsl(155 100% 21% / 0.5), inset 0 2px 4px hsl(155 100% 21% / 0.15);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -111,6 +115,11 @@
     --glass-bg: 155 50% 9% / 0.8;
     --glass-border: 155 35% 25% / 0.5;
     --glass-shadow: 0 0% 0% / 0.3;
+
+    --gradient-background: linear-gradient(180deg, hsl(155 50% 6%) 0%, hsl(155 45% 8%) 50%, hsl(155 50% 5%) 100%);
+    --gradient-background-radial: radial-gradient(ellipse at top, hsl(155 45% 10%) 0%, hsl(155 50% 6%) 50%, hsl(155 45% 7%) 100%);
+    --shadow-click: 0 2px 8px 0 hsl(45 93% 58% / 0.3), inset 0 1px 2px hsl(45 93% 58% / 0.1);
+    --shadow-active: 0 1px 3px 0 hsl(45 93% 58% / 0.4), inset 0 2px 4px hsl(45 93% 58% / 0.15);
   }
 }
 
@@ -124,8 +133,10 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply text-foreground font-sans antialiased;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background: var(--gradient-background);
+    min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -178,6 +189,60 @@
     @apply py-16 md:py-24 px-4 md:px-8;
   }
 
+  /* Interactive click effects */
+  .click-effect {
+    @apply transition-all duration-200 ease-out cursor-pointer;
+  }
+
+  .click-effect:hover {
+    @apply -translate-y-0.5;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .click-effect:active {
+    @apply translate-y-0 scale-[0.98];
+    box-shadow: var(--shadow-active);
+  }
+
+  /* Button click shadow */
+  .btn-click {
+    @apply transition-all duration-150 ease-out;
+  }
+
+  .btn-click:active {
+    @apply scale-[0.97];
+    box-shadow: var(--shadow-click);
+  }
+
+  /* Card with click effect */
+  .card-interactive {
+    @apply transition-all duration-300 ease-out cursor-pointer;
+  }
+
+  .card-interactive:hover {
+    @apply -translate-y-1;
+    box-shadow: var(--shadow-xl);
+  }
+
+  .card-interactive:active {
+    @apply translate-y-0 scale-[0.99];
+    box-shadow: var(--shadow-active);
+  }
+
+  /* Link with underline animation */
+  .link-hover {
+    @apply relative transition-all duration-300;
+  }
+
+  .link-hover::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 origin-right transition-transform duration-300;
+  }
+
+  .link-hover:hover::after {
+    @apply scale-x-100 origin-left;
+  }
+
   /* Smooth animations */
   .animate-fade-up {
     animation: fadeUp 0.6s ease-out forwards;
@@ -189,6 +254,18 @@
 
   .animate-slide-in {
     animation: slideIn 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .animate-bounce-in {
+    animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
   }
 
   /* Stagger children animations */
@@ -203,6 +280,44 @@
   .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
   .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
   .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+
+  /* Smooth stagger with scale */
+  .stagger-scale > * {
+    opacity: 0;
+    animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .stagger-scale > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger-scale > *:nth-child(2) { animation-delay: 0.1s; }
+  .stagger-scale > *:nth-child(3) { animation-delay: 0.15s; }
+  .stagger-scale > *:nth-child(4) { animation-delay: 0.2s; }
+  .stagger-scale > *:nth-child(5) { animation-delay: 0.25s; }
+  .stagger-scale > *:nth-child(6) { animation-delay: 0.3s; }
+
+  /* Glow effect on hover */
+  .glow-hover {
+    @apply transition-all duration-300;
+  }
+
+  .glow-hover:hover {
+    box-shadow: 0 0 20px hsl(155 100% 21% / 0.3), var(--shadow-lg);
+  }
+
+  /* Pulse ring effect */
+  .pulse-ring {
+    @apply relative;
+  }
+
+  .pulse-ring::before {
+    content: '';
+    @apply absolute inset-0 rounded-inherit opacity-0 transition-opacity duration-300;
+    box-shadow: 0 0 0 3px hsl(155 100% 21% / 0.3);
+  }
+
+  .pulse-ring:active::before {
+    @apply opacity-100;
+    animation: pulseRing 0.4s ease-out;
+  }
 }
 
 @layer utilities {
@@ -223,6 +338,24 @@
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: hsl(var(--muted-foreground));
     border-radius: 3px;
+  }
+
+  /* Smooth transition utility */
+  .transition-smooth {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .transition-bounce {
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  /* Shadow utilities */
+  .shadow-click {
+    box-shadow: var(--shadow-click);
+  }
+
+  .shadow-active {
+    box-shadow: var(--shadow-active);
   }
 }
 
@@ -257,6 +390,42 @@
   }
 }
 
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @keyframes float {
   0%, 100% {
     transform: translateY(0);
@@ -266,6 +435,50 @@
   }
 }
 
+@keyframes pulseRing {
+  0% {
+    box-shadow: 0 0 0 0 hsl(155 100% 21% / 0.4);
+  }
+  100% {
+    box-shadow: 0 0 0 8px hsl(155 100% 21% / 0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 .animate-float {
   animation: float 6s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, hsl(155 100% 21% / 0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Global interactive elements enhancement */
+button, a, [role="button"] {
+  @apply transition-all duration-200 ease-out;
+}
+
+button:active, [role="button"]:active {
+  @apply scale-[0.98];
+}
+
+/* Card base styles */
+.dark .glass-nav {
+  background: linear-gradient(135deg, hsl(155 50% 9% / 0.9) 0%, hsl(155 50% 7% / 0.85) 100%);
+  border-color: hsl(155 35% 25% / 0.3);
+}
+
+.dark .glass-card {
+  background: linear-gradient(135deg, hsl(155 50% 12% / 0.9) 0%, hsl(155 50% 9% / 0.8) 100%);
+  border-color: hsl(155 35% 25% / 0.3);
 }
