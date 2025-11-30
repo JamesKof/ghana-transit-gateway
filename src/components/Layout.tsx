@@ -7,6 +7,7 @@ import { LiveChatWidget } from "./LiveChatWidget";
 import { WhatsAppButton } from "./WhatsAppButton";
 import { NotificationBanner } from "./NotificationBanner";
 import { FAQChatbot } from "./FAQChatbot";
+import { ScrollProgress } from "./ScrollProgress";
 
 interface LayoutProps {
   children: ReactNode;
@@ -21,6 +22,7 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <div className="min-h-screen bg-background">
+      <ScrollProgress />
       <Navigation />
       <main>{children}</main>
       <Footer />

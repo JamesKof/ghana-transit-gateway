@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Home, Building2, FileText, Stamp, Newspaper, Phone, HelpCircle, Search } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { Menu, X, Home, Building2, FileText, Stamp, Newspaper, Phone, HelpCircle, Search, ChevronDown, Shield, Calendar, Crown, Briefcase, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SearchModal } from "./SearchModal";
 import { DarkModeToggle } from "./DarkModeToggle";
@@ -8,9 +8,18 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useLanguage } from "@/contexts/LanguageContext";
 import gisLogo from "@/assets/gis-logo.png";
 
+const aboutSubItems = [
+  { label: "Overview", href: "/about?tab=overview", icon: Shield },
+  { label: "History", href: "/about?tab=history", icon: Calendar },
+  { label: "Structure", href: "/about?tab=structure", icon: Building2 },
+  { label: "Leadership", href: "/about?tab=leadership", icon: Crown },
+  { label: "Directorates", href: "/about?tab=directorates", icon: Briefcase },
+  { label: "Regional Commands", href: "/about?tab=regional", icon: MapPin },
+];
+
 const navItems = [
   { labelKey: "nav.home", href: "/", icon: Home },
-  { labelKey: "nav.about", href: "/about", icon: Building2 },
+  { labelKey: "nav.about", href: "/about", icon: Building2, hasDropdown: true },
   { labelKey: "nav.services", href: "/services", icon: FileText },
   { labelKey: "nav.permits", href: "/permits", icon: Stamp },
   { labelKey: "nav.news", href: "/news", icon: Newspaper },
@@ -23,6 +32,9 @@ export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
+  const [mobileAboutExpanded, setMobileAboutExpanded] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const { t } = useLanguage();
 
@@ -51,7 +63,21 @@ export function Navigation() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setAboutDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const isActive = (href: string) => {
+    if (href === "/about") {
+      return location.pathname === "/about";
+    }
     return location.pathname === href;
   };
 
@@ -85,21 +111,77 @@ export function Navigation() {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item, index) => (
-              <Link
-                key={item.labelKey}
-                to={item.href}
-                className={`relative flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
-                  isActive(item.href)
-                    ? "bg-primary/10 text-primary shadow-sm"
-                    : "text-foreground/80 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_15px_hsl(155_100%_21%/0.15)]"
-                } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
-                style={{ 
-                  transitionDelay: isVisible ? `${150 + index * 50}ms` : '0ms',
-                }}
-              >
-                <item.icon className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
-                {t(item.labelKey)}
-              </Link>
+              item.hasDropdown ? (
+                <div
+                  key={item.labelKey}
+                  ref={dropdownRef}
+                  className="relative"
+                  onMouseEnter={() => setAboutDropdownOpen(true)}
+                  onMouseLeave={() => setAboutDropdownOpen(false)}
+                >
+                  <Link
+                    to={item.href}
+                    className={`relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                      isActive(item.href)
+                        ? "bg-primary/10 text-primary shadow-sm"
+                        : "text-foreground/80 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_15px_hsl(155_100%_21%/0.15)]"
+                    } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
+                    style={{ 
+                      transitionDelay: isVisible ? `${150 + index * 50}ms` : '0ms',
+                    }}
+                  >
+                    <item.icon className="w-4 h-4" />
+                    {t(item.labelKey)}
+                    <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${aboutDropdownOpen ? "rotate-180" : ""}`} />
+                  </Link>
+                  
+                  {/* Dropdown Menu */}
+                  <div
+                    className={`absolute top-full left-0 mt-2 w-56 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-xl overflow-hidden transition-all duration-200 ${
+                      aboutDropdownOpen 
+                        ? "opacity-100 visible translate-y-0" 
+                        : "opacity-0 invisible -translate-y-2"
+                    }`}
+                    style={{
+                      backdropFilter: 'blur(20px)',
+                      WebkitBackdropFilter: 'blur(20px)',
+                    }}
+                  >
+                    <div className="py-2">
+                      {aboutSubItems.map((subItem, subIndex) => (
+                        <Link
+                          key={subItem.label}
+                          to={subItem.href}
+                          onClick={() => setAboutDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-primary hover:bg-primary/5 transition-colors"
+                          style={{
+                            animationDelay: `${subIndex * 50}ms`,
+                          }}
+                        >
+                          <subItem.icon className="w-4 h-4 text-primary/60" />
+                          {subItem.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={item.labelKey}
+                  to={item.href}
+                  className={`relative flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    isActive(item.href)
+                      ? "bg-primary/10 text-primary shadow-sm"
+                      : "text-foreground/80 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_15px_hsl(155_100%_21%/0.15)]"
+                  } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
+                  style={{ 
+                    transitionDelay: isVisible ? `${150 + index * 50}ms` : '0ms',
+                  }}
+                >
+                  <item.icon className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
+                  {t(item.labelKey)}
+                </Link>
+              )
             ))}
           </div>
 
@@ -159,7 +241,7 @@ export function Navigation() {
           onClick={() => setIsMobileMenuOpen(false)}
         />
         <div
-          className={`absolute right-0 top-0 h-full w-80 max-w-[85%] bg-card/95 backdrop-blur-xl border-l border-border/30 shadow-xl transition-transform duration-300 ${
+          className={`absolute right-0 top-0 h-full w-80 max-w-[85%] bg-card/95 backdrop-blur-xl border-l border-border/30 shadow-xl transition-transform duration-300 overflow-y-auto ${
             isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
@@ -179,20 +261,56 @@ export function Navigation() {
 
             <div className="space-y-2">
               {navItems.map((item, index) => (
-                <Link
-                  key={item.labelKey}
-                  to={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 animate-fade-up active:scale-[0.98] ${
-                    isActive(item.href)
-                      ? "bg-primary/10 text-primary shadow-sm"
-                      : "text-foreground hover:bg-muted"
-                  }`}
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  <item.icon className={`w-5 h-5 ${isActive(item.href) ? "text-primary" : "text-primary/60"}`} />
-                  <span className="font-medium">{t(item.labelKey)}</span>
-                </Link>
+                item.hasDropdown ? (
+                  <div key={item.labelKey}>
+                    <button
+                      onClick={() => setMobileAboutExpanded(!mobileAboutExpanded)}
+                      className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                        isActive(item.href)
+                          ? "bg-primary/10 text-primary shadow-sm"
+                          : "text-foreground hover:bg-muted"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <item.icon className={`w-5 h-5 ${isActive(item.href) ? "text-primary" : "text-primary/60"}`} />
+                        <span className="font-medium">{t(item.labelKey)}</span>
+                      </div>
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileAboutExpanded ? "rotate-180" : ""}`} />
+                    </button>
+                    
+                    {/* Mobile Dropdown */}
+                    <div className={`overflow-hidden transition-all duration-300 ${mobileAboutExpanded ? "max-h-96 mt-1" : "max-h-0"}`}>
+                      <div className="pl-4 space-y-1">
+                        {aboutSubItems.map((subItem) => (
+                          <Link
+                            key={subItem.label}
+                            to={subItem.href}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-foreground/70 hover:text-primary hover:bg-primary/5 transition-colors"
+                          >
+                            <subItem.icon className="w-4 h-4 text-primary/50" />
+                            {subItem.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <Link
+                    key={item.labelKey}
+                    to={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 animate-fade-up active:scale-[0.98] ${
+                      isActive(item.href)
+                        ? "bg-primary/10 text-primary shadow-sm"
+                        : "text-foreground hover:bg-muted"
+                    }`}
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    <item.icon className={`w-5 h-5 ${isActive(item.href) ? "text-primary" : "text-primary/60"}`} />
+                    <span className="font-medium">{t(item.labelKey)}</span>
+                  </Link>
+                )
               ))}
             </div>
 
