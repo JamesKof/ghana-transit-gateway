@@ -51,28 +51,24 @@ export function Navigation() {
   return (
     <>
       <nav
-        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-6xl transition-all duration-500 ${
+        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl transition-all duration-500 rounded-2xl py-2 px-4 backdrop-blur-xl border border-border/30 ${
           isScrolled
-            ? "glass-nav rounded-2xl py-2 px-4"
-            : "bg-transparent py-3 px-4"
+            ? "bg-card/80 shadow-glass"
+            : "bg-card/60 shadow-lg"
         }`}
+        style={{
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+        }}
       >
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
+          {/* Logo - Only Icon */}
+          <Link to="/" className="flex items-center group">
             <img
               src={gisLogo}
               alt="Ghana Immigration Service Logo"
-              className="h-12 w-12 object-contain transition-transform duration-300 group-hover:scale-105"
+              className="h-10 w-10 object-contain transition-all duration-300 group-hover:scale-110 group-active:scale-95"
             />
-            <div className="hidden sm:block">
-              <p className={`font-serif font-bold text-lg leading-tight ${isScrolled ? "text-primary" : "text-secondary"}`}>
-                Ghana Immigration
-              </p>
-              <p className={`text-xs font-medium ${isScrolled ? "text-muted-foreground" : "text-secondary/80"}`}>
-                Service
-              </p>
-            </div>
           </Link>
 
           {/* Desktop Navigation */}
@@ -83,12 +79,8 @@ export function Navigation() {
                 to={item.href}
                 className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
                   isActive(item.href)
-                    ? isScrolled
-                      ? "bg-primary/10 text-primary"
-                      : "bg-secondary/20 text-secondary"
-                    : isScrolled
-                    ? "text-foreground hover:text-primary hover:bg-primary/10"
-                    : "text-secondary/90 hover:text-secondary hover:bg-secondary/10"
+                    ? "bg-primary/10 text-primary shadow-sm"
+                    : "text-foreground/80 hover:text-primary hover:bg-primary/5"
                 }`}
               >
                 <item.icon className="w-4 h-4" />
@@ -101,19 +93,15 @@ export function Navigation() {
           <div className="hidden md:flex items-center gap-2">
             <button
               onClick={() => setIsSearchOpen(true)}
-              className={`p-2 rounded-xl transition-colors ${
-                isScrolled 
-                  ? "hover:bg-muted text-muted-foreground hover:text-foreground" 
-                  : "hover:bg-secondary/10 text-secondary/70 hover:text-secondary"
-              }`}
+              className="p-2 rounded-xl transition-all duration-200 hover:bg-muted text-muted-foreground hover:text-foreground active:scale-95"
               aria-label="Search"
             >
               <Search className="w-5 h-5" />
             </button>
-            <LanguageSwitcher isScrolled={isScrolled} />
-            <DarkModeToggle isScrolled={isScrolled} />
+            <LanguageSwitcher isScrolled={true} />
+            <DarkModeToggle isScrolled={true} />
             <Button
-              variant={isScrolled ? "hero" : "heroOutline"}
+              variant="hero"
               size="sm"
               asChild
             >
@@ -125,24 +113,20 @@ export function Navigation() {
           <div className="flex items-center gap-2 lg:hidden">
             <button
               onClick={() => setIsSearchOpen(true)}
-              className={`p-2 rounded-xl transition-colors ${
-                isScrolled ? "hover:bg-muted" : "hover:bg-secondary/10"
-              }`}
+              className="p-2 rounded-xl transition-all duration-200 hover:bg-muted active:scale-95"
               aria-label="Search"
             >
-              <Search className={`w-5 h-5 ${isScrolled ? "text-foreground" : "text-secondary"}`} />
+              <Search className="w-5 h-5 text-foreground" />
             </button>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2 rounded-xl transition-colors ${
-                isScrolled ? "hover:bg-muted" : "hover:bg-secondary/10"
-              }`}
+              className="p-2 rounded-xl transition-all duration-200 hover:bg-muted active:scale-95"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
-                <X className={`w-6 h-6 ${isScrolled ? "text-foreground" : "text-secondary"}`} />
+                <X className="w-6 h-6 text-foreground" />
               ) : (
-                <Menu className={`w-6 h-6 ${isScrolled ? "text-foreground" : "text-secondary"}`} />
+                <Menu className="w-6 h-6 text-foreground" />
               )}
             </button>
           </div>
@@ -156,11 +140,11 @@ export function Navigation() {
         }`}
       >
         <div
-          className="absolute inset-0 bg-primary/80 backdrop-blur-sm"
+          className="absolute inset-0 bg-background/80 backdrop-blur-sm"
           onClick={() => setIsMobileMenuOpen(false)}
         />
         <div
-          className={`absolute right-0 top-0 h-full w-80 max-w-[85%] bg-card shadow-xl transition-transform duration-300 ${
+          className={`absolute right-0 top-0 h-full w-80 max-w-[85%] bg-card/95 backdrop-blur-xl border-l border-border/30 shadow-xl transition-transform duration-300 ${
             isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
@@ -172,7 +156,7 @@ export function Navigation() {
               </div>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 rounded-lg hover:bg-muted"
+                className="p-2 rounded-lg hover:bg-muted transition-all duration-200 active:scale-95"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -184,14 +168,14 @@ export function Navigation() {
                   key={item.labelKey}
                   to={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors animate-fade-up ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 animate-fade-up active:scale-[0.98] ${
                     isActive(item.href)
-                      ? "bg-primary/10 text-primary"
+                      ? "bg-primary/10 text-primary shadow-sm"
                       : "text-foreground hover:bg-muted"
                   }`}
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
-                  <item.icon className={`w-5 h-5 ${isActive(item.href) ? "text-primary" : "text-secondary"}`} />
+                  <item.icon className={`w-5 h-5 ${isActive(item.href) ? "text-primary" : "text-primary/60"}`} />
                   <span className="font-medium">{t(item.labelKey)}</span>
                 </Link>
               ))}
