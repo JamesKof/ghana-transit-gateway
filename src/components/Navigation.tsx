@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Home, Building2, FileText, Stamp, Newspaper, Phone, HelpCircle } from "lucide-react";
+import { Menu, X, Home, Building2, FileText, Stamp, Newspaper, Phone, HelpCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SearchModal } from "./SearchModal";
 import gisLogo from "@/assets/gis-logo.png";
 
 const navItems = [
@@ -17,6 +18,7 @@ const navItems = [
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -25,6 +27,17 @@ export function Navigation() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const isActive = (href: string) => {
@@ -64,7 +77,7 @@ export function Navigation() {
               <Link
                 key={item.label}
                 to={item.href}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
                   isActive(item.href)
                     ? isScrolled
                       ? "bg-primary/10 text-primary"
@@ -80,8 +93,19 @@ export function Navigation() {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* Search & CTA */}
+          <div className="hidden md:flex items-center gap-2">
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className={`p-2 rounded-xl transition-colors ${
+                isScrolled 
+                  ? "hover:bg-muted text-muted-foreground hover:text-foreground" 
+                  : "hover:bg-secondary/10 text-secondary/70 hover:text-secondary"
+              }`}
+              aria-label="Search"
+            >
+              <Search className="w-5 h-5" />
+            </button>
             <Button
               variant={isScrolled ? "hero" : "heroOutline"}
               size="sm"
@@ -92,19 +116,30 @@ export function Navigation() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`lg:hidden p-2 rounded-xl transition-colors ${
-              isScrolled ? "hover:bg-muted" : "hover:bg-secondary/10"
-            }`}
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? (
-              <X className={`w-6 h-6 ${isScrolled ? "text-foreground" : "text-secondary"}`} />
-            ) : (
-              <Menu className={`w-6 h-6 ${isScrolled ? "text-foreground" : "text-secondary"}`} />
-            )}
-          </button>
+          <div className="flex items-center gap-2 lg:hidden">
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className={`p-2 rounded-xl transition-colors ${
+                isScrolled ? "hover:bg-muted" : "hover:bg-secondary/10"
+              }`}
+              aria-label="Search"
+            >
+              <Search className={`w-5 h-5 ${isScrolled ? "text-foreground" : "text-secondary"}`} />
+            </button>
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className={`p-2 rounded-xl transition-colors ${
+                isScrolled ? "hover:bg-muted" : "hover:bg-secondary/10"
+              }`}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className={`w-6 h-6 ${isScrolled ? "text-foreground" : "text-secondary"}`} />
+              ) : (
+                <Menu className={`w-6 h-6 ${isScrolled ? "text-foreground" : "text-secondary"}`} />
+              )}
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -166,6 +201,9 @@ export function Navigation() {
           </div>
         </div>
       </div>
+
+      {/* Search Modal */}
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   );
 }
