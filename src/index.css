@@ -6,56 +6,57 @@
 
 @layer base {
   :root {
-    /* Ghana Government Professional Palette */
+    /* Ghana Government Professional Palette - Green Theme */
     --background: 210 20% 98%;
-    --foreground: 222 47% 11%;
+    --foreground: 155 50% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 155 50% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 155 50% 10%;
 
-    /* Deep Navy - Authority & Trust */
-    --primary: 222 47% 15%;
-    --primary-foreground: 45 93% 58%;
+    /* Deep Forest Green - Authority & Trust (from logo) */
+    --primary: 155 100% 21%;
+    --primary-foreground: 0 0% 100%;
 
     /* Gold - Ghana National Color */
     --secondary: 45 93% 58%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary-foreground: 155 50% 10%;
 
     /* Muted backgrounds */
-    --muted: 210 20% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 150 15% 96%;
+    --muted-foreground: 155 16% 47%;
 
-    /* Ghana Green accent */
-    --accent: 145 63% 32%;
+    /* Ghana Green accent (lighter) */
+    --accent: 155 63% 42%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 222 47% 15%;
+    --border: 150 20% 91%;
+    --input: 150 20% 91%;
+    --ring: 155 100% 21%;
 
     --radius: 0.75rem;
 
     /* Custom tokens */
     --gold: 45 93% 58%;
     --gold-dark: 45 93% 47%;
-    --navy: 222 47% 15%;
-    --navy-light: 222 35% 25%;
-    --ghana-green: 145 63% 32%;
+    --green: 155 100% 21%;
+    --green-light: 155 70% 30%;
+    --green-dark: 155 100% 15%;
+    --ghana-green: 155 63% 32%;
     --ghana-red: 0 72% 45%;
 
     /* Glassmorphism */
     --glass-bg: 0 0% 100% / 0.7;
     --glass-border: 0 0% 100% / 0.3;
-    --glass-shadow: 222 47% 15% / 0.1;
+    --glass-shadow: 155 100% 21% / 0.1;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(222 47% 15%) 0%, hsl(222 35% 25%) 50%, hsl(222 47% 20%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(155 100% 21%) 0%, hsl(155 70% 30%) 50%, hsl(155 80% 25%) 100%);
     --gradient-gold: linear-gradient(135deg, hsl(45 93% 58%) 0%, hsl(45 93% 47%) 100%);
     --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.9) 0%, hsl(0 0% 100% / 0.7) 100%);
 
@@ -64,8 +65,9 @@
     --shadow-md: 0 4px 6px -1px hsl(var(--glass-shadow)), 0 2px 4px -2px hsl(var(--glass-shadow));
     --shadow-lg: 0 10px 15px -3px hsl(var(--glass-shadow)), 0 4px 6px -4px hsl(var(--glass-shadow));
     --shadow-xl: 0 20px 25px -5px hsl(var(--glass-shadow)), 0 8px 10px -6px hsl(var(--glass-shadow));
-    --shadow-glass: 0 8px 32px 0 hsl(222 47% 15% / 0.15);
+    --shadow-glass: 0 8px 32px 0 hsl(155 100% 21% / 0.15);
     --shadow-gold: 0 4px 20px 0 hsl(45 93% 58% / 0.3);
+    --shadow-green: 0 4px 20px 0 hsl(155 100% 21% / 0.3);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -78,36 +80,36 @@
   }
 
   .dark {
-    --background: 222 47% 8%;
+    --background: 155 50% 6%;
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 11%;
+    --card: 155 50% 9%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222 47% 11%;
+    --popover: 155 50% 9%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 45 93% 58%;
-    --primary-foreground: 222 47% 11%;
+    --primary-foreground: 155 50% 10%;
 
-    --secondary: 222 35% 20%;
+    --secondary: 155 40% 20%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 222 35% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 155 35% 17%;
+    --muted-foreground: 150 20% 65%;
 
-    --accent: 145 63% 42%;
+    --accent: 155 63% 42%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 222 35% 20%;
-    --input: 222 35% 20%;
+    --border: 155 35% 20%;
+    --input: 155 35% 20%;
     --ring: 45 93% 58%;
 
-    --glass-bg: 222 47% 11% / 0.8;
-    --glass-border: 222 35% 25% / 0.5;
+    --glass-bg: 155 50% 9% / 0.8;
+    --glass-border: 155 35% 25% / 0.5;
     --glass-shadow: 0 0% 0% / 0.3;
   }
 }

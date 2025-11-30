@@ -1,16 +1,10 @@
 import { ArrowRight, Shield, Globe, Users } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
-    <section id="home" className="relative min-h-screen flex items-center hero-gradient overflow-hidden">
+    <section className="relative min-h-screen flex items-center hero-gradient overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-10 w-72 h-72 bg-secondary/30 rounded-full blur-3xl animate-float" />
@@ -57,18 +51,20 @@ export function HeroSection() {
             <Button 
               variant="hero" 
               size="xl" 
-              onClick={() => scrollToSection("#services")}
+              asChild
               className="group"
             >
-              Explore Services
-              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+              <Link to="/services">
+                Explore Services
+                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+              </Link>
             </Button>
             <Button 
               variant="heroOutline" 
               size="xl"
-              onClick={() => scrollToSection("#about")}
+              asChild
             >
-              Learn More
+              <Link to="/about">Learn More</Link>
             </Button>
           </div>
 

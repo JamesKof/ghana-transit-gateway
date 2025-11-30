@@ -1,45 +1,39 @@
+import { Link } from "react-router-dom";
 import { Facebook, Twitter, Instagram, Youtube, ExternalLink } from "lucide-react";
 import gisLogo from "@/assets/gis-logo.png";
 
 const quickLinks = [
-  { label: "About GIS", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Permits & Visas", href: "#permits" },
-  { label: "News", href: "#news" },
-  { label: "Contact", href: "#contact" },
+  { label: "About GIS", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Permits & Visas", href: "/permits" },
+  { label: "News", href: "/news" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const services = [
-  { label: "Tourist Visa", href: "#services" },
-  { label: "Work Permit", href: "#services" },
-  { label: "Residence Permit", href: "#services" },
-  { label: "Visa on Arrival", href: "#services" },
-  { label: "Passport Services", href: "#services" },
+  { label: "Tourist Visa", href: "/services" },
+  { label: "Work Permit", href: "/permits" },
+  { label: "Residence Permit", href: "/permits" },
+  { label: "Visa on Arrival", href: "/services" },
+  { label: "Passport Services", href: "/services" },
 ];
 
 const resources = [
-  { label: "FAQs", href: "#faq" },
-  { label: "Legal Handbook", href: "#faq" },
-  { label: "Application Forms", href: "#faq" },
-  { label: "Fee Schedule", href: "#faq" },
-  { label: "Regional Offices", href: "#contact" },
+  { label: "FAQs", href: "/resources" },
+  { label: "Legal Handbook", href: "https://gis.gov.gh/legal-handbook/", external: true },
+  { label: "Application Forms", href: "https://gis.gov.gh/permits/", external: true },
+  { label: "Fee Schedule", href: "https://gis.gov.gh/fees-and-charges/", external: true },
+  { label: "Regional Offices", href: "/contact" },
 ];
 
 const socialLinks = [
-  { icon: Facebook, href: "#", label: "Facebook" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Youtube, href: "#", label: "YouTube" },
+  { icon: Facebook, href: "https://www.facebook.com/gaborone.gis", label: "Facebook" },
+  { icon: Twitter, href: "https://twitter.com/GISGhana", label: "Twitter" },
+  { icon: Instagram, href: "https://www.instagram.com/ghanaimmigrationservice/", label: "Instagram" },
+  { icon: Youtube, href: "https://www.youtube.com/@GhanaImmigrationService", label: "YouTube" },
 ];
 
 export function Footer() {
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <footer className="bg-primary text-primary-foreground">
       {/* Main Footer */}
@@ -67,6 +61,8 @@ export function Footer() {
                 <a
                   key={index}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 rounded-xl bg-primary-foreground/10 flex items-center justify-center hover:bg-secondary hover:text-secondary-foreground transition-colors"
                   aria-label={social.label}
                 >
@@ -82,16 +78,12 @@ export function Footer() {
             <ul className="space-y-3">
               {quickLinks.map((link, index) => (
                 <li key={index}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection(link.href);
-                    }}
+                  <Link
+                    to={link.href}
                     className="text-primary-foreground/70 hover:text-secondary transition-colors text-sm"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -103,16 +95,12 @@ export function Footer() {
             <ul className="space-y-3">
               {services.map((link, index) => (
                 <li key={index}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection(link.href);
-                    }}
+                  <Link
+                    to={link.href}
                     className="text-primary-foreground/70 hover:text-secondary transition-colors text-sm"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -124,16 +112,24 @@ export function Footer() {
             <ul className="space-y-3">
               {resources.map((link, index) => (
                 <li key={index}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection(link.href);
-                    }}
-                    className="text-primary-foreground/70 hover:text-secondary transition-colors text-sm"
-                  >
-                    {link.label}
-                  </a>
+                  {link.external ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary-foreground/70 hover:text-secondary transition-colors text-sm flex items-center gap-1"
+                    >
+                      {link.label}
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className="text-primary-foreground/70 hover:text-secondary transition-colors text-sm"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -153,8 +149,8 @@ export function Footer() {
               Ministry of Interior <ExternalLink className="w-3 h-3" />
             </a>
             <span>•</span>
-            <a href="https://mint.gov.gh" target="_blank" rel="noopener noreferrer" className="hover:text-secondary flex items-center gap-1">
-              Ministry of National Security <ExternalLink className="w-3 h-3" />
+            <a href="https://gis.gov.gh" target="_blank" rel="noopener noreferrer" className="hover:text-secondary flex items-center gap-1">
+              Official GIS Website <ExternalLink className="w-3 h-3" />
             </a>
           </div>
         </div>
@@ -166,9 +162,9 @@ export function Footer() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-primary-foreground/60">
             <p>© {new Date().getFullYear()} Ghana Immigration Service. All rights reserved.</p>
             <div className="flex gap-6">
-              <a href="#" className="hover:text-secondary transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-secondary transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-secondary transition-colors">Accessibility</a>
+              <a href="https://gis.gov.gh/privacy-policy/" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">Privacy Policy</a>
+              <a href="https://gis.gov.gh/terms-of-service/" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">Terms of Service</a>
+              <Link to="/contact" className="hover:text-secondary transition-colors">Contact</Link>
             </div>
           </div>
         </div>
