@@ -84,6 +84,8 @@ export default {
         'glass': 'var(--shadow-glass)',
         'gold': 'var(--shadow-gold)',
         'green': 'var(--shadow-green)',
+        'click': 'var(--shadow-click)',
+        'active': 'var(--shadow-active)',
       },
       keyframes: {
         "accordion-down": {
