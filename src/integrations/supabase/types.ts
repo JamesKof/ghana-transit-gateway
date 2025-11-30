@@ -14,7 +14,117 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      applications: {
+        Row: {
+          applicant_email: string
+          applicant_name: string
+          application_type: string
+          id: string
+          reference_number: string
+          status: string
+          submitted_at: string
+          updated_at: string
+        }
+        Insert: {
+          applicant_email: string
+          applicant_name: string
+          application_type: string
+          id?: string
+          reference_number: string
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Update: {
+          applicant_email?: string
+          applicant_name?: string
+          application_type?: string
+          id?: string
+          reference_number?: string
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      notification_logs: {
+        Row: {
+          application_id: string | null
+          delivery_status: string
+          id: string
+          message: string
+          notification_type: string
+          sent_at: string
+          subject: string
+          subscriber_id: string | null
+        }
+        Insert: {
+          application_id?: string | null
+          delivery_status?: string
+          id?: string
+          message: string
+          notification_type: string
+          sent_at?: string
+          subject: string
+          subscriber_id?: string | null
+        }
+        Update: {
+          application_id?: string | null
+          delivery_status?: string
+          id?: string
+          message?: string
+          notification_type?: string
+          sent_at?: string
+          subject?: string
+          subscriber_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_logs_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_logs_subscriber_id_fkey"
+            columns: ["subscriber_id"]
+            isOneToOne: false
+            referencedRelation: "notification_subscribers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_subscribers: {
+        Row: {
+          application_ref: string | null
+          created_at: string
+          email: string
+          id: string
+          is_active: boolean
+          notification_types: string[]
+          updated_at: string
+        }
+        Insert: {
+          application_ref?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          is_active?: boolean
+          notification_types?: string[]
+          updated_at?: string
+        }
+        Update: {
+          application_ref?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          is_active?: boolean
+          notification_types?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
