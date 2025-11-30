@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const notificationTypes = [
   { id: "status", label: "Application Status Updates", description: "Get notified when your application status changes" },
@@ -51,16 +52,33 @@ export function EmailNotificationSignup() {
 
     setIsSubmitting(true);
 
-    // Simulate API call - in production, this would call a Supabase edge function
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const { data, error } = await supabase.functions.invoke("send-notification-email", {
+        body: {
+          type: "subscribe",
+          email,
+          applicationRef: applicationRef || undefined,
+          notificationTypes: selectedTypes,
+        },
+      });
 
-    setIsSubmitting(false);
-    setIsSubscribed(true);
+      if (error) throw error;
 
-    toast({
-      title: "Subscribed Successfully!",
-      description: "You will receive email notifications for your selected preferences.",
-    });
+      setIsSubscribed(true);
+      toast({
+        title: "Subscribed Successfully!",
+        description: "You will receive email notifications for your selected preferences.",
+      });
+    } catch (error: any) {
+      console.error("Subscription error:", error);
+      toast({
+        title: "Subscription Failed",
+        description: error.message || "Unable to subscribe. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSubscribed) {
