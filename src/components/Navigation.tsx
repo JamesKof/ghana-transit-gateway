@@ -1,0 +1,177 @@
+import { useState, useEffect } from "react";
+import { Menu, X, Home, Building2, FileText, Stamp, Newspaper, Phone, HelpCircle, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import gisLogo from "@/assets/gis-logo.png";
+
+const navItems = [
+  { label: "Home", href: "#home", icon: Home },
+  { label: "About GIS", href: "#about", icon: Building2 },
+  { label: "Services", href: "#services", icon: FileText },
+  { label: "Permits & Visas", href: "#permits", icon: Stamp },
+  { label: "News", href: "#news", icon: Newspaper },
+  { label: "Contact", href: "#contact", icon: Phone },
+  { label: "FAQ", href: "#faq", icon: HelpCircle },
+];
+
+export function Navigation() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToSection = (href: string) => {
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+    setIsMobileMenuOpen(false);
+  };
+
+  return (
+    <>
+      <nav
+        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-6xl transition-all duration-500 ${
+          isScrolled
+            ? "glass-nav rounded-2xl py-2 px-4"
+            : "bg-transparent py-3 px-4"
+        }`}
+      >
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <a
+            href="#home"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("#home");
+            }}
+            className="flex items-center gap-3 group"
+          >
+            <img
+              src={gisLogo}
+              alt="Ghana Immigration Service Logo"
+              className="h-12 w-12 object-contain transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="hidden sm:block">
+              <p className={`font-serif font-bold text-lg leading-tight ${isScrolled ? "text-primary" : "text-secondary"}`}>
+                Ghana Immigration
+              </p>
+              <p className={`text-xs font-medium ${isScrolled ? "text-muted-foreground" : "text-secondary/80"}`}>
+                Service
+              </p>
+            </div>
+          </a>
+
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center gap-1">
+            {navItems.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection(item.href);
+                }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-primary/10 ${
+                  isScrolled
+                    ? "text-foreground hover:text-primary"
+                    : "text-secondary/90 hover:text-secondary hover:bg-secondary/10"
+                }`}
+              >
+                <item.icon className="w-4 h-4" />
+                {item.label}
+              </a>
+            ))}
+          </div>
+
+          {/* CTA Button */}
+          <div className="hidden md:flex items-center gap-3">
+            <Button
+              variant={isScrolled ? "hero" : "heroOutline"}
+              size="sm"
+              onClick={() => scrollToSection("#services")}
+            >
+              Get Started
+            </Button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className={`lg:hidden p-2 rounded-xl transition-colors ${
+              isScrolled ? "hover:bg-muted" : "hover:bg-secondary/10"
+            }`}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <X className={`w-6 h-6 ${isScrolled ? "text-foreground" : "text-secondary"}`} />
+            ) : (
+              <Menu className={`w-6 h-6 ${isScrolled ? "text-foreground" : "text-secondary"}`} />
+            )}
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Menu */}
+      <div
+        className={`fixed inset-0 z-40 lg:hidden transition-all duration-300 ${
+          isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+      >
+        <div
+          className="absolute inset-0 bg-primary/80 backdrop-blur-sm"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+        <div
+          className={`absolute right-0 top-0 h-full w-80 max-w-[85%] bg-card shadow-xl transition-transform duration-300 ${
+            isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <img src={gisLogo} alt="GIS Logo" className="h-10 w-10 object-contain" />
+                <span className="font-serif font-bold text-primary">GIS</span>
+              </div>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 rounded-lg hover:bg-muted"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              {navItems.map((item, index) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection(item.href);
+                  }}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-foreground hover:bg-muted transition-colors animate-fade-up"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  <item.icon className="w-5 h-5 text-secondary" />
+                  <span className="font-medium">{item.label}</span>
+                </a>
+              ))}
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-border">
+              <Button variant="hero" className="w-full" onClick={() => scrollToSection("#services")}>
+                Get Started
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
