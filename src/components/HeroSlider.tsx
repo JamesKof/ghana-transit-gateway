@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowRight, Shield, Globe, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 import heroAirport from "@/assets/hero-airport.jpg";
 import heroHeadquarters from "@/assets/hero-headquarters.jpg";
 import heroBorder from "@/assets/hero-border.jpg";
@@ -26,6 +27,7 @@ const slides = [
 
 export function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -112,13 +114,13 @@ export function HeroSlider() {
 
           {/* Main Heading */}
           <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-secondary leading-tight mb-6">
-            Welcome to{" "}
-            <span className="text-gradient-gold">Ghana Immigration Service</span>
+            {t("hero.welcome")}{" "}
+            <span className="text-gradient-gold">{t("hero.title")}</span>
           </h1>
 
           {/* Dynamic Subtitle */}
           <p className="text-lg sm:text-xl md:text-2xl text-secondary/80 max-w-3xl mx-auto mb-4 font-light">
-            Regulating Migration, Facilitating Mobility
+            {t("hero.subtitle")}
           </p>
 
           {/* Slide Caption */}
@@ -136,7 +138,7 @@ export function HeroSlider() {
               className="group"
             >
               <Link to="/services">
-                Explore Services
+                {t("hero.applyOnline")}
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
@@ -145,7 +147,7 @@ export function HeroSlider() {
               size="xl"
               asChild
             >
-              <Link to="/about">Learn More</Link>
+              <Link to="/about">{t("hero.trackApplication")}</Link>
             </Button>
           </div>
 

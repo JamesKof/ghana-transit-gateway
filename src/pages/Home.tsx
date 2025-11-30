@@ -1,47 +1,49 @@
 import { HeroSlider } from "@/components/HeroSlider";
 import { ApplicationStatusChecker } from "@/components/ApplicationStatusChecker";
+import { AppointmentBooking } from "@/components/AppointmentBooking";
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, FileText, Globe, Phone, BookOpen, Newspaper } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const quickNavItems = [
   {
     icon: Shield,
-    title: "About GIS",
+    titleKey: "nav.about",
     description: "Learn about our mission, vision, and core mandate",
     href: "/about",
     color: "bg-primary/10 text-primary",
   },
   {
     icon: FileText,
-    title: "Services",
+    titleKey: "nav.services",
     description: "Explore visa and permit services we offer",
     href: "/services",
     color: "bg-secondary/10 text-secondary",
   },
   {
     icon: Globe,
-    title: "Permits & Visas",
+    titleKey: "nav.permits",
     description: "View permit categories and requirements",
     href: "/permits",
     color: "bg-accent/10 text-accent",
   },
   {
     icon: Newspaper,
-    title: "News & Updates",
+    titleKey: "nav.news",
     description: "Stay informed with latest announcements",
     href: "/news",
     color: "bg-primary/10 text-primary",
   },
   {
     icon: BookOpen,
-    title: "Resources",
+    titleKey: "nav.resources",
     description: "Access forms, guides, and FAQs",
     href: "/resources",
     color: "bg-secondary/10 text-secondary",
   },
   {
     icon: Phone,
-    title: "Contact Us",
+    titleKey: "nav.contact",
     description: "Get in touch with our service points",
     href: "/contact",
     color: "bg-accent/10 text-accent",
@@ -49,6 +51,8 @@ const quickNavItems = [
 ];
 
 const Home = () => {
+  const { t } = useLanguage();
+
   return (
     <>
       <HeroSlider />
@@ -76,7 +80,7 @@ const Home = () => {
                   <item.icon className="w-7 h-7" />
                 </div>
                 <h3 className="font-semibold text-xl text-foreground mb-2 group-hover:text-primary transition-colors">
-                  {item.title}
+                  {t(item.titleKey)}
                 </h3>
                 <p className="text-muted-foreground text-sm mb-4">
                   {item.description}
@@ -92,6 +96,13 @@ const Home = () => {
 
       {/* Application Status Checker */}
       <ApplicationStatusChecker />
+
+      {/* Appointment Booking Section */}
+      <section className="section-padding bg-muted/30">
+        <div className="container max-w-2xl">
+          <AppointmentBooking />
+        </div>
+      </section>
     </>
   );
 };

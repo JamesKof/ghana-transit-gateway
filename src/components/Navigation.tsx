@@ -3,16 +3,19 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Home, Building2, FileText, Stamp, Newspaper, Phone, HelpCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SearchModal } from "./SearchModal";
+import { DarkModeToggle } from "./DarkModeToggle";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
 import gisLogo from "@/assets/gis-logo.png";
 
 const navItems = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "About GIS", href: "/about", icon: Building2 },
-  { label: "Services", href: "/services", icon: FileText },
-  { label: "Permits & Visas", href: "/permits", icon: Stamp },
-  { label: "News", href: "/news", icon: Newspaper },
-  { label: "Contact", href: "/contact", icon: Phone },
-  { label: "Resources", href: "/resources", icon: HelpCircle },
+  { labelKey: "nav.home", href: "/", icon: Home },
+  { labelKey: "nav.about", href: "/about", icon: Building2 },
+  { labelKey: "nav.services", href: "/services", icon: FileText },
+  { labelKey: "nav.permits", href: "/permits", icon: Stamp },
+  { labelKey: "nav.news", href: "/news", icon: Newspaper },
+  { labelKey: "nav.contact", href: "/contact", icon: Phone },
+  { labelKey: "nav.resources", href: "/resources", icon: HelpCircle },
 ];
 
 export function Navigation() {
@@ -20,6 +23,7 @@ export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -75,7 +79,7 @@ export function Navigation() {
           <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
               <Link
-                key={item.label}
+                key={item.labelKey}
                 to={item.href}
                 className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
                   isActive(item.href)
@@ -88,7 +92,7 @@ export function Navigation() {
                 }`}
               >
                 <item.icon className="w-4 h-4" />
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             ))}
           </div>
@@ -106,12 +110,14 @@ export function Navigation() {
             >
               <Search className="w-5 h-5" />
             </button>
+            <LanguageSwitcher isScrolled={isScrolled} />
+            <DarkModeToggle isScrolled={isScrolled} />
             <Button
               variant={isScrolled ? "hero" : "heroOutline"}
               size="sm"
               asChild
             >
-              <Link to="/services">Get Started</Link>
+              <Link to="/services">{t("nav.getStarted")}</Link>
             </Button>
           </div>
 
@@ -175,7 +181,7 @@ export function Navigation() {
             <div className="space-y-2">
               {navItems.map((item, index) => (
                 <Link
-                  key={item.label}
+                  key={item.labelKey}
                   to={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors animate-fade-up ${
@@ -186,15 +192,20 @@ export function Navigation() {
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
                   <item.icon className={`w-5 h-5 ${isActive(item.href) ? "text-primary" : "text-secondary"}`} />
-                  <span className="font-medium">{item.label}</span>
+                  <span className="font-medium">{t(item.labelKey)}</span>
                 </Link>
               ))}
             </div>
 
-            <div className="mt-8 pt-6 border-t border-border">
+            <div className="flex items-center gap-2 mt-6 pt-4 border-t border-border">
+              <LanguageSwitcher isScrolled={true} />
+              <DarkModeToggle isScrolled={true} />
+            </div>
+
+            <div className="mt-4">
               <Button variant="hero" className="w-full" asChild>
                 <Link to="/services" onClick={() => setIsMobileMenuOpen(false)}>
-                  Get Started
+                  {t("nav.getStarted")}
                 </Link>
               </Button>
             </div>
