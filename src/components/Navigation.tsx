@@ -22,8 +22,15 @@ export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const location = useLocation();
   const { t } = useLanguage();
+
+  // Navbar entrance animation
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,10 +58,14 @@ export function Navigation() {
   return (
     <>
       <nav
-        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl transition-all duration-500 rounded-2xl py-2 px-4 backdrop-blur-xl border border-border/30 ${
+        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-5xl rounded-2xl py-2 px-4 backdrop-blur-xl border border-border/30 transition-all duration-700 ease-out ${
           isScrolled
             ? "bg-card/80 shadow-glass"
             : "bg-card/60 shadow-lg"
+        } ${
+          isVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-4"
         }`}
         style={{
           backdropFilter: 'blur(20px)',
@@ -73,27 +84,30 @@ export function Navigation() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
-            {navItems.map((item) => (
+            {navItems.map((item, index) => (
               <Link
                 key={item.labelKey}
                 to={item.href}
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                className={`relative flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
                   isActive(item.href)
                     ? "bg-primary/10 text-primary shadow-sm"
-                    : "text-foreground/80 hover:text-primary hover:bg-primary/5"
-                }`}
+                    : "text-foreground/80 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_15px_hsl(155_100%_21%/0.15)]"
+                } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
+                style={{ 
+                  transitionDelay: isVisible ? `${150 + index * 50}ms` : '0ms',
+                }}
               >
-                <item.icon className="w-4 h-4" />
+                <item.icon className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
                 {t(item.labelKey)}
               </Link>
             ))}
           </div>
 
           {/* Search & CTA */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className={`hidden md:flex items-center gap-2 transition-all duration-500 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`} style={{ transitionDelay: isVisible ? '500ms' : '0ms' }}>
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="p-2 rounded-xl transition-all duration-200 hover:bg-muted text-muted-foreground hover:text-foreground active:scale-95"
+              className="p-2 rounded-xl transition-all duration-200 hover:bg-muted text-muted-foreground hover:text-foreground hover:shadow-[0_0_12px_hsl(155_100%_21%/0.12)] active:scale-95"
               aria-label="Search"
             >
               <Search className="w-5 h-5" />
@@ -103,6 +117,7 @@ export function Navigation() {
             <Button
               variant="hero"
               size="sm"
+              className="hover:shadow-[0_0_20px_hsl(45_93%_58%/0.4)]"
               asChild
             >
               <Link to="/services">{t("nav.getStarted")}</Link>
