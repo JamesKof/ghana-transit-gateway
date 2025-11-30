@@ -1,4 +1,5 @@
-import { HeroSection } from "@/components/HeroSection";
+import { HeroSlider } from "@/components/HeroSlider";
+import { ApplicationStatusChecker } from "@/components/ApplicationStatusChecker";
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, FileText, Globe, Phone, BookOpen, Newspaper } from "lucide-react";
 
@@ -50,10 +51,10 @@ const quickNavItems = [
 const Home = () => {
   return (
     <>
-      <HeroSection />
+      <HeroSlider />
       
       {/* Quick Navigation Section */}
-      <section className="section-padding bg-muted/30">
+      <section className="section-padding bg-background">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4">
@@ -88,6 +89,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Application Status Checker */}
+      <ApplicationStatusChecker />
     </>
   );
 };
