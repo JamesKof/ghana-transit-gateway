@@ -1,4 +1,4 @@
-import { FileText, Download, Book, Scale, FileSpreadsheet, HelpCircle } from "lucide-react";
+import { FileText, Download, Book, Scale, FileSpreadsheet, HelpCircle, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const resources = [
@@ -8,6 +8,7 @@ const resources = [
     description: "Comprehensive guide to immigration laws, regulations, and procedures in Ghana.",
     type: "PDF",
     size: "2.4 MB",
+    url: "https://gis.gov.gh/legal-handbook/",
   },
   {
     icon: Scale,
@@ -15,6 +16,7 @@ const resources = [
     description: "The principal legislation governing immigration in Ghana.",
     type: "PDF",
     size: "1.8 MB",
+    url: "https://gis.gov.gh/immigration-act-2000-act-573/",
   },
   {
     icon: FileText,
@@ -22,6 +24,7 @@ const resources = [
     description: "Downloadable forms for various visa and permit applications.",
     type: "Forms",
     size: "Multiple",
+    url: "https://gis.gov.gh/permits/",
   },
   {
     icon: FileSpreadsheet,
@@ -29,6 +32,7 @@ const resources = [
     description: "Current fees for all immigration services and permits.",
     type: "PDF",
     size: "520 KB",
+    url: "https://gis.gov.gh/fees-and-charges/",
   },
   {
     icon: Book,
@@ -36,13 +40,15 @@ const resources = [
     description: "GIS strategic objectives and development framework.",
     type: "PDF",
     size: "3.1 MB",
+    url: "https://gis.gov.gh/strategic-plan/",
   },
   {
     icon: HelpCircle,
     title: "FAQs & Guidelines",
     description: "Frequently asked questions and step-by-step application guides.",
     type: "Guide",
-    size: "1.2 MB",
+    size: "Online",
+    url: "https://gis.gov.gh/faqs/",
   },
 ];
 
@@ -67,7 +73,7 @@ const faqs = [
 
 export function ResourcesSection() {
   return (
-    <section id="faq" className="section-padding bg-muted/30">
+    <section className="section-padding bg-muted/30">
       <div className="container">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -85,9 +91,12 @@ export function ResourcesSection() {
         {/* Resources Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           {resources.map((resource, index) => (
-            <div
+            <a
               key={index}
-              className="bg-card rounded-2xl p-6 border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+              href={resource.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-card rounded-2xl p-6 border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer block"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -103,12 +112,12 @@ export function ResourcesSection() {
               <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">{resource.size}</span>
-                <Button variant="ghost" size="sm" className="group-hover:text-primary">
-                  <Download className="w-4 h-4 mr-1" />
-                  Download
-                </Button>
+                <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                  <ExternalLink className="w-4 h-4" />
+                  View
+                </span>
               </div>
-            </div>
+            </a>
           ))}
         </div>
 
@@ -132,6 +141,16 @@ export function ResourcesSection() {
                 <p className="text-muted-foreground pl-9">{faq.answer}</p>
               </div>
             ))}
+          </div>
+
+          {/* More FAQs Link */}
+          <div className="text-center mt-8">
+            <Button variant="outline" asChild>
+              <a href="https://gis.gov.gh/faqs/" target="_blank" rel="noopener noreferrer">
+                View All FAQs
+                <ExternalLink className="w-4 h-4 ml-2" />
+              </a>
+            </Button>
           </div>
         </div>
       </div>

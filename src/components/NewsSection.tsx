@@ -1,4 +1,4 @@
-import { Calendar, ArrowRight, AlertTriangle, Bell, FileText } from "lucide-react";
+import { Calendar, ArrowRight, AlertTriangle, Bell, FileText, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const newsItems = [
@@ -9,6 +9,7 @@ const newsItems = [
     date: "November 2024",
     summary: "The Ghana Immigration Service warns the public against fraudulent recruitment schemes. GIS does not charge fees for employment opportunities.",
     urgent: true,
+    url: "https://gis.gov.gh/news/",
   },
   {
     type: "announcement",
@@ -17,6 +18,7 @@ const newsItems = [
     date: "October 2024",
     summary: "New streamlined procedures for visa applications now in effect. Check requirements before applying to ensure faster processing.",
     urgent: false,
+    url: "https://gis.gov.gh/permits/",
   },
   {
     type: "news",
@@ -25,6 +27,7 @@ const newsItems = [
     date: "October 2024",
     summary: "GIS implements advanced biometric verification systems at major border posts to improve security and facilitate legitimate travel.",
     urgent: false,
+    url: "https://gis.gov.gh/news/",
   },
   {
     type: "announcement",
@@ -33,12 +36,13 @@ const newsItems = [
     date: "September 2024",
     summary: "Ghana continues to support the African Union's free movement protocol, enabling easier travel for AU citizens.",
     urgent: false,
+    url: "https://gis.gov.gh/news/",
   },
 ];
 
 export function NewsSection() {
   return (
-    <section id="news" className="section-padding bg-background">
+    <section className="section-padding bg-background">
       <div className="container">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12">
@@ -50,9 +54,11 @@ export function NewsSection() {
               News & Announcements
             </h2>
           </div>
-          <Button variant="outline" className="self-start sm:self-auto">
-            View All News
-            <ArrowRight className="w-4 h-4 ml-2" />
+          <Button variant="outline" asChild className="self-start sm:self-auto">
+            <a href="https://gis.gov.gh/news/" target="_blank" rel="noopener noreferrer">
+              View All News
+              <ExternalLink className="w-4 h-4 ml-2" />
+            </a>
           </Button>
         </div>
 
@@ -81,8 +87,10 @@ export function NewsSection() {
                   <Calendar className="w-4 h-4" />
                   {newsItems[0].date}
                 </div>
-                <Button variant="hero" size="sm">
-                  Read More
+                <Button variant="hero" size="sm" asChild>
+                  <a href={newsItems[0].url} target="_blank" rel="noopener noreferrer">
+                    Read More
+                  </a>
                 </Button>
               </div>
             </div>
@@ -90,13 +98,16 @@ export function NewsSection() {
 
           {/* Other News Items */}
           {newsItems.slice(1).map((item, index) => (
-            <div
+            <a
               key={index}
-              className="bg-card rounded-2xl p-6 border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-card rounded-2xl p-6 border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer block"
             >
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0 group-hover:bg-secondary/10 transition-colors">
-                  <item.icon className="w-6 h-6 text-muted-foreground group-hover:text-secondary transition-colors" />
+                <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0 group-hover:bg-primary/10 transition-colors">
+                  <item.icon className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>
                 <div className="flex-grow">
                   <div className="flex items-center gap-2 mb-2">
@@ -116,7 +127,7 @@ export function NewsSection() {
                   </p>
                 </div>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>

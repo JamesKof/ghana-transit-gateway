@@ -1,4 +1,5 @@
-import { CheckCircle2, ArrowRight, FileText, Users, Briefcase, Home, GraduationCap, Baby } from "lucide-react";
+import { CheckCircle2, ArrowRight, FileText, Users, Briefcase, Home, GraduationCap } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const permitTypes = [
@@ -62,7 +63,7 @@ const permitTypes = [
 
 export function PermitsSection() {
   return (
-    <section id="permits" className="section-padding bg-background">
+    <section className="section-padding bg-background">
       <div className="container">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -86,7 +87,7 @@ export function PermitsSection() {
               className="bg-card rounded-3xl border border-border shadow-sm overflow-hidden hover:shadow-xl transition-all duration-300 group"
             >
               {/* Card Header */}
-              <div className="bg-gradient-to-r from-primary to-navy-light p-6">
+              <div className="bg-gradient-to-r from-primary to-green-light p-6">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-2xl bg-secondary/20 flex items-center justify-center">
                     <permit.icon className="w-7 h-7 text-secondary" />
@@ -129,9 +130,11 @@ export function PermitsSection() {
 
               {/* Card Footer */}
               <div className="px-6 pb-6">
-                <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  Apply Now
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
+                  <a href="https://gis.gov.gh/permits/" target="_blank" rel="noopener noreferrer">
+                    Apply Now
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </a>
                 </Button>
               </div>
             </div>
@@ -151,8 +154,10 @@ export function PermitsSection() {
                 are certified and translated to English where applicable.
               </p>
             </div>
-            <Button variant="gold" size="lg" className="flex-shrink-0">
-              Download Full Guide
+            <Button variant="gold" size="lg" className="flex-shrink-0" asChild>
+              <a href="https://gis.gov.gh/fees-and-charges/" target="_blank" rel="noopener noreferrer">
+                View Fee Schedule
+              </a>
             </Button>
           </div>
         </div>

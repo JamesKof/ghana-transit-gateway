@@ -9,6 +9,7 @@ import {
   GraduationCap,
   ArrowRight
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const services = [
@@ -70,7 +71,7 @@ const services = [
 
 export function ServicesSection() {
   return (
-    <section id="services" className="section-padding bg-muted/30 relative">
+    <section className="section-padding bg-muted/30 relative">
       <div className="container">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -119,9 +120,11 @@ export function ServicesSection() {
           <p className="text-muted-foreground mb-4">
             Need help with your application? Our team is here to assist you.
           </p>
-          <Button variant="gold" size="lg">
-            View All Services
-            <ArrowRight className="w-4 h-4 ml-2" />
+          <Button variant="gold" size="lg" asChild>
+            <a href="https://gis.gov.gh/services/" target="_blank" rel="noopener noreferrer">
+              View All Services
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </a>
           </Button>
         </div>
       </div>

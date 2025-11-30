@@ -1,21 +1,23 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Home, Building2, FileText, Stamp, Newspaper, Phone, HelpCircle, ChevronDown } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, Home, Building2, FileText, Stamp, Newspaper, Phone, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import gisLogo from "@/assets/gis-logo.png";
 
 const navItems = [
-  { label: "Home", href: "#home", icon: Home },
-  { label: "About GIS", href: "#about", icon: Building2 },
-  { label: "Services", href: "#services", icon: FileText },
-  { label: "Permits & Visas", href: "#permits", icon: Stamp },
-  { label: "News", href: "#news", icon: Newspaper },
-  { label: "Contact", href: "#contact", icon: Phone },
-  { label: "FAQ", href: "#faq", icon: HelpCircle },
+  { label: "Home", href: "/", icon: Home },
+  { label: "About GIS", href: "/about", icon: Building2 },
+  { label: "Services", href: "/services", icon: FileText },
+  { label: "Permits & Visas", href: "/permits", icon: Stamp },
+  { label: "News", href: "/news", icon: Newspaper },
+  { label: "Contact", href: "/contact", icon: Phone },
+  { label: "Resources", href: "/resources", icon: HelpCircle },
 ];
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,12 +27,8 @@ export function Navigation() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-    setIsMobileMenuOpen(false);
+  const isActive = (href: string) => {
+    return location.pathname === href;
   };
 
   return (
@@ -44,14 +42,7 @@ export function Navigation() {
       >
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <a
-            href="#home"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("#home");
-            }}
-            className="flex items-center gap-3 group"
-          >
+          <Link to="/" className="flex items-center gap-3 group">
             <img
               src={gisLogo}
               alt="Ghana Immigration Service Logo"
@@ -65,27 +56,27 @@ export function Navigation() {
                 Service
               </p>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.label}
-                href={item.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection(item.href);
-                }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-primary/10 ${
-                  isScrolled
-                    ? "text-foreground hover:text-primary"
+                to={item.href}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  isActive(item.href)
+                    ? isScrolled
+                      ? "bg-primary/10 text-primary"
+                      : "bg-secondary/20 text-secondary"
+                    : isScrolled
+                    ? "text-foreground hover:text-primary hover:bg-primary/10"
                     : "text-secondary/90 hover:text-secondary hover:bg-secondary/10"
                 }`}
               >
                 <item.icon className="w-4 h-4" />
                 {item.label}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -94,9 +85,9 @@ export function Navigation() {
             <Button
               variant={isScrolled ? "hero" : "heroOutline"}
               size="sm"
-              onClick={() => scrollToSection("#services")}
+              asChild
             >
-              Get Started
+              <Link to="/services">Get Started</Link>
             </Button>
           </div>
 
@@ -148,25 +139,28 @@ export function Navigation() {
 
             <div className="space-y-2">
               {navItems.map((item, index) => (
-                <a
+                <Link
                   key={item.label}
-                  href={item.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection(item.href);
-                  }}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-foreground hover:bg-muted transition-colors animate-fade-up"
+                  to={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors animate-fade-up ${
+                    isActive(item.href)
+                      ? "bg-primary/10 text-primary"
+                      : "text-foreground hover:bg-muted"
+                  }`}
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
-                  <item.icon className="w-5 h-5 text-secondary" />
+                  <item.icon className={`w-5 h-5 ${isActive(item.href) ? "text-primary" : "text-secondary"}`} />
                   <span className="font-medium">{item.label}</span>
-                </a>
+                </Link>
               ))}
             </div>
 
             <div className="mt-8 pt-6 border-t border-border">
-              <Button variant="hero" className="w-full" onClick={() => scrollToSection("#services")}>
-                Get Started
+              <Button variant="hero" className="w-full" asChild>
+                <Link to="/services" onClick={() => setIsMobileMenuOpen(false)}>
+                  Get Started
+                </Link>
               </Button>
             </div>
           </div>

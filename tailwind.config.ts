@@ -51,14 +51,14 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Ghana-specific colors
         gold: {
           DEFAULT: "hsl(var(--gold))",
           dark: "hsl(var(--gold-dark))",
         },
-        navy: {
-          DEFAULT: "hsl(var(--navy))",
-          light: "hsl(var(--navy-light))",
+        green: {
+          DEFAULT: "hsl(var(--green))",
+          light: "hsl(var(--green-light))",
+          dark: "hsl(var(--green-dark))",
         },
         ghana: {
           green: "hsl(var(--ghana-green))",
@@ -83,6 +83,7 @@ export default {
       boxShadow: {
         'glass': 'var(--shadow-glass)',
         'gold': 'var(--shadow-gold)',
+        'green': 'var(--shadow-green)',
       },
       keyframes: {
         "accordion-down": {

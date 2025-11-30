@@ -1,17 +1,18 @@
-import { MapPin, Phone, Mail, Clock, Send, Building2 } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Send, Building2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const offices = [
   {
     name: "Headquarters",
-    address: "Independence Avenue, Accra",
+    address: "Independence Avenue, P.O. Box 416, Accra",
     phone: "+233 302 258250",
     hours: "Mon - Fri: 8:00 AM - 5:00 PM",
   },
   {
     name: "Kotoka International Airport",
-    address: "Airport Terminal, Accra",
+    address: "Airport Terminal 3, Accra",
     phone: "+233 302 776171",
     hours: "24/7 Operations",
   },
@@ -21,9 +22,16 @@ const offices = [
     phone: "+233 362 020123",
     hours: "6:00 AM - 10:00 PM",
   },
+  {
+    name: "Elubo Border Post",
+    address: "Elubo, Western Region",
+    phone: "+233 312 020456",
+    hours: "6:00 AM - 10:00 PM",
+  },
 ];
 
 export function ContactSection() {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -33,12 +41,15 @@ export function ContactSection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
+    toast({
+      title: "Message Sent",
+      description: "Thank you for contacting us. We will respond shortly.",
+    });
+    setFormData({ name: "", email: "", subject: "", message: "" });
   };
 
   return (
-    <section id="contact" className="section-padding bg-background relative overflow-hidden">
+    <section className="section-padding bg-background relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute bottom-0 left-0 w-full h-1/2 bg-primary -z-10" />
 
@@ -70,7 +81,7 @@ export function ContactSection() {
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all"
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                     placeholder="John Doe"
                     required
                   />
@@ -83,7 +94,7 @@ export function ContactSection() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all"
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                     placeholder="john@example.com"
                     required
                   />
@@ -96,7 +107,7 @@ export function ContactSection() {
                 <select
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                   required
                 >
                   <option value="">Select a subject</option>
@@ -115,7 +126,7 @@ export function ContactSection() {
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   rows={4}
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all resize-none"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
                   placeholder="How can we help you?"
                   required
                 />
@@ -134,8 +145,8 @@ export function ContactSection() {
               <h3 className="font-serif text-2xl font-bold text-foreground mb-6">Contact Information</h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-5 h-5 text-secondary" />
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium text-foreground">Headquarters Address</p>
@@ -143,8 +154,8 @@ export function ContactSection() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-5 h-5 text-secondary" />
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-5 h-5 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium text-foreground">Phone Numbers</p>
@@ -152,22 +163,33 @@ export function ContactSection() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-5 h-5 text-secondary" />
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium text-foreground">Email Address</p>
-                    <p className="text-muted-foreground">info@gis.gov.gh</p>
+                    <a href="mailto:info@gis.gov.gh" className="text-primary hover:underline">info@gis.gov.gh</a>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                    <Clock className="w-5 h-5 text-secondary" />
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Clock className="w-5 h-5 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium text-foreground">Working Hours</p>
                     <p className="text-muted-foreground">Monday - Friday: 8:00 AM - 5:00 PM</p>
                   </div>
+                </div>
+                <div className="pt-4 border-t border-border">
+                  <a 
+                    href="https://gis.gov.gh/contact-us/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary font-medium flex items-center gap-2 hover:underline"
+                  >
+                    Visit Official Contact Page
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
                 </div>
               </div>
             </div>
