@@ -3,15 +3,15 @@ import { ArrowRight, Shield, Globe, Users, ChevronLeft, ChevronRight } from "luc
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
-import heroAirport from "@/assets/hero-airport.jpg";
+import heroOfficers from "@/assets/hero-officers.jpg";
 import heroHeadquarters from "@/assets/hero-headquarters.jpg";
 import heroBorder from "@/assets/hero-border.jpg";
 
 const slides = [
   {
-    image: heroAirport,
-    title: "Airport Immigration",
-    subtitle: "Seamless Entry at Kotoka International Airport",
+    image: heroOfficers,
+    title: "Ghana Immigration Officers",
+    subtitle: "Professional Service & National Security",
   },
   {
     image: heroHeadquarters,

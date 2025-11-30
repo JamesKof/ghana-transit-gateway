@@ -5,6 +5,8 @@ import { Footer } from "./Footer";
 import { ScrollToTop } from "./ScrollToTop";
 import { LiveChatWidget } from "./LiveChatWidget";
 import { WhatsAppButton } from "./WhatsAppButton";
+import { NotificationBanner } from "./NotificationBanner";
+import { FAQChatbot } from "./FAQChatbot";
 
 interface LayoutProps {
   children: ReactNode;
@@ -23,6 +25,8 @@ export function Layout({ children }: LayoutProps) {
       <main>{children}</main>
       <Footer />
       <ScrollToTop />
+      <NotificationBanner />
+      <FAQChatbot />
       <LiveChatWidget />
       <WhatsAppButton />
     </div>

@@ -1,6 +1,7 @@
 import { HeroSlider } from "@/components/HeroSlider";
 import { ApplicationStatusChecker } from "@/components/ApplicationStatusChecker";
 import { AppointmentBooking } from "@/components/AppointmentBooking";
+import { DocumentUpload } from "@/components/DocumentUpload";
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, FileText, Globe, Phone, BookOpen, Newspaper } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -97,10 +98,21 @@ const Home = () => {
       {/* Application Status Checker */}
       <ApplicationStatusChecker />
 
-      {/* Appointment Booking Section */}
+      {/* Document Upload & Appointment Section */}
       <section className="section-padding bg-muted/30">
-        <div className="container max-w-2xl">
-          <AppointmentBooking />
+        <div className="container">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4">
+              Manage Your Application
+            </h2>
+            <p className="text-muted-foreground">
+              Upload documents or book an appointment at any GIS office
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <DocumentUpload />
+            <AppointmentBooking />
+          </div>
         </div>
       </section>
     </>
