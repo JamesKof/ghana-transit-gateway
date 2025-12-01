@@ -13,6 +13,7 @@ import Permits from "./pages/Permits";
 import News from "./pages/News";
 import Resources from "./pages/Resources";
 import Contact from "./pages/Contact";
+import FeedbackDashboard from "./pages/FeedbackDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
                 <Route path="/news" element={<News />} />
                 <Route path="/resources" element={<Resources />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/admin/feedback" element={<FeedbackDashboard />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Layout>

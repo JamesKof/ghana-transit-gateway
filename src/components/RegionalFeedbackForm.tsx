@@ -47,7 +47,8 @@ export const RegionalFeedbackForm = ({ region }: RegionalFeedbackFormProps) => {
   const onSubmit = async (data: FeedbackFormData) => {
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from("regional_feedback").insert({
+      // Insert feedback into database
+      const { error: insertError } = await supabase.from("regional_feedback").insert({
         region,
         name: data.name,
         email: data.email,
@@ -57,11 +58,33 @@ export const RegionalFeedbackForm = ({ region }: RegionalFeedbackFormProps) => {
         message: data.message,
       });
 
-      if (error) throw error;
+      if (insertError) throw insertError;
+
+      // Send email notification
+      try {
+        const { error: emailError } = await supabase.functions.invoke("send-feedback-notification", {
+          body: {
+            name: data.name,
+            email: data.email,
+            region,
+            feedback_type: data.feedback_type,
+            subject: data.subject,
+            message: data.message,
+          },
+        });
+
+        if (emailError) {
+          console.error("Email notification error:", emailError);
+          // Don't throw - feedback was saved successfully
+        }
+      } catch (emailError) {
+        console.error("Error sending email notification:", emailError);
+        // Continue - feedback was saved successfully
+      }
 
       toast({
         title: "Feedback Submitted",
-        description: "Thank you for your feedback. We will review it and respond if necessary.",
+        description: "Thank you for your feedback. You will receive a confirmation email shortly.",
       });
       form.reset();
       setIsOpen(false);

@@ -84,19 +84,19 @@ const Home = () => {
                 <Link
                   key={index}
                   to={item.href}
-                  className="group bg-card rounded-2xl p-6 border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                  className="group bg-card rounded-2xl p-8 border border-border shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col min-h-[240px]"
                 >
-                  <div className={`w-14 h-14 rounded-xl ${item.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shrink-0`}>
-                    <IconComponent className="w-7 h-7 shrink-0" />
+                  <div className={`w-16 h-16 rounded-xl ${item.color} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform flex-shrink-0`}>
+                    <IconComponent className="w-8 h-8 flex-shrink-0" />
                   </div>
-                  <h3 className="font-semibold text-xl text-foreground mb-2 group-hover:text-primary transition-colors">
+                  <h3 className="font-semibold text-xl text-foreground mb-3 group-hover:text-primary transition-colors flex-shrink-0">
                     {t(item.titleKey)}
                   </h3>
-                  <p className="text-muted-foreground text-sm mb-4">
+                  <p className="text-muted-foreground text-sm mb-5 flex-grow leading-relaxed">
                     {item.description}
                   </p>
-                  <div className="flex items-center text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                    Explore <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                  <div className="flex items-center text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                    Explore <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform flex-shrink-0" />
                   </div>
                 </Link>
               );
