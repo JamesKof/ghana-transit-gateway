@@ -1,6 +1,7 @@
 import { NewsSection } from "@/components/NewsSection";
 import { EmailNotificationSignup } from "@/components/EmailNotificationSignup";
-import { Calendar, Tag } from "lucide-react";
+import { Calendar } from "lucide-react";
+import { ScrollReveal, StaggerReveal } from "@/hooks/useScrollAnimation";
 
 const pressReleases = [
   {
@@ -31,40 +32,50 @@ const categories = [
 const News = () => {
   return (
     <div className="pt-24">
-      <NewsSection />
+      <ScrollReveal animation="fade-up">
+        <NewsSection />
+      </ScrollReveal>
       
       {/* Press Releases Section */}
       <section className="section-padding bg-muted/30">
         <div className="container">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent text-sm font-semibold mb-4">
-              Official Communications
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Press Releases
-            </h2>
-            <p className="text-muted-foreground">
-              Official statements and communications from the Ghana Immigration Service
-            </p>
-          </div>
+          <ScrollReveal animation="fade-up">
+            <div className="text-center max-w-3xl mx-auto mb-12">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent text-sm font-semibold mb-4">
+                Official Communications
+              </span>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-4">
+                Press Releases
+              </h2>
+              <p className="text-muted-foreground">
+                Official statements and communications from the Ghana Immigration Service
+              </p>
+            </div>
+          </ScrollReveal>
           
           {/* Category Filter */}
-          <div className="flex flex-wrap gap-2 justify-center mb-8">
-            {categories.map((cat, index) => (
-              <button
-                key={index}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  index === 0
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          <ScrollReveal animation="fade-up" delay={100}>
+            <div className="flex flex-wrap gap-2 justify-center mb-8">
+              {categories.map((cat, index) => (
+                <button
+                  key={index}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    index === 0
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </ScrollReveal>
           
-          <div className="max-w-4xl mx-auto space-y-4">
+          <StaggerReveal
+            className="max-w-4xl mx-auto space-y-4"
+            staggerDelay={100}
+            animation="fade-up"
+          >
             {pressReleases.map((release, index) => (
               <div
                 key={index}
@@ -84,25 +95,29 @@ const News = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </StaggerReveal>
           
-          <div className="text-center mt-8">
-            <a
-              href="https://gis.gov.gh/news/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
-            >
-              View All Press Releases
-            </a>
-          </div>
+          <ScrollReveal animation="fade-up" delay={400}>
+            <div className="text-center mt-8">
+              <a
+                href="https://gis.gov.gh/news/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
+              >
+                View All Press Releases
+              </a>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* Newsletter Signup */}
       <section className="section-padding bg-background">
         <div className="container max-w-xl">
-          <EmailNotificationSignup />
+          <ScrollReveal animation="fade-up">
+            <EmailNotificationSignup />
+          </ScrollReveal>
         </div>
       </section>
     </div>
