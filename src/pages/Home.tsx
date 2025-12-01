@@ -3,6 +3,8 @@ import { ApplicationStatusChecker } from "@/components/ApplicationStatusChecker"
 import { AppointmentBooking } from "@/components/AppointmentBooking";
 import { DocumentUpload } from "@/components/DocumentUpload";
 import { BackToTop } from "@/components/BackToTop";
+import { ScrollProgress } from "@/components/ScrollProgress";
+import { PullToRefresh } from "@/components/PullToRefresh";
 import { QuickNavSkeleton, QuickNavSkeletonMobile } from "@/components/skeletons/QuickNavSkeleton";
 import { ApplicationStatusSkeleton } from "@/components/skeletons/ApplicationStatusSkeleton";
 import { ManagementSkeleton, ManagementSkeletonMobile } from "@/components/skeletons/ManagementSkeleton";
@@ -12,7 +14,10 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { ScrollReveal, StaggerReveal } from "@/hooks/useScrollAnimation";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import { useParallax } from "@/hooks/useParallax";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 const quickNavItems = [
   {
@@ -69,6 +74,22 @@ const Home = () => {
     management: true,
   });
 
+  // Parallax effects
+  const heroParallax = useParallax({ speed: 0.3, direction: "up" });
+  const sectionParallax = useParallax({ speed: 0.15, direction: "up" });
+
+  // Pull to refresh
+  const handleRefresh = async () => {
+    setIsLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsLoading(false);
+    toast.success("Content refreshed!");
+  };
+
+  const { isPulling, pullDistance, isRefreshing, threshold } = usePullToRefresh({
+    onRefresh: handleRefresh,
+  });
+
   useEffect(() => {
     // Simulate initial loading
     const timer = setTimeout(() => {
@@ -84,12 +105,42 @@ const Home = () => {
 
   return (
     <>
-      <HeroSlider />
+      <ScrollProgress />
+      {isMobile && (
+        <PullToRefresh 
+          pullDistance={pullDistance} 
+          isRefreshing={isRefreshing} 
+          threshold={threshold}
+        />
+      )}
+      
+      <div
+        style={{
+          transform: `translateY(${heroParallax}px)`,
+          transition: "transform 0.1s ease-out",
+        }}
+      >
+        <HeroSlider />
+      </div>
+      
       <BackToTop />
       
       {/* Quick Navigation Section */}
-      <section className="section-padding bg-background scroll-mt-20 transition-all duration-500 ease-in-out" id="quick-navigation">
-        <div className="container">
+      <section 
+        className="section-padding bg-background scroll-mt-20 transition-all duration-500 ease-in-out relative overflow-hidden" 
+        id="quick-navigation"
+      >
+        <div 
+          className="absolute inset-0 opacity-5 pointer-events-none"
+          style={{
+            transform: `translateY(${sectionParallax * 0.5}px)`,
+            transition: "transform 0.1s ease-out",
+          }}
+        >
+          <div className="absolute top-10 left-10 w-64 h-64 bg-primary rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-64 h-64 bg-secondary rounded-full blur-3xl" />
+        </div>
+        <div className="container relative z-10">
           {isLoading ? (
             isMobile ? <QuickNavSkeletonMobile /> : <QuickNavSkeleton />
           ) : isMobile ? (
@@ -186,7 +237,14 @@ const Home = () => {
       </section>
 
       {/* Application Status Checker */}
-      <section className="scroll-mt-20 transition-all duration-500 ease-in-out" id="status-checker">
+      <section 
+        className="scroll-mt-20 transition-all duration-500 ease-in-out relative"
+        id="status-checker"
+        style={{
+          transform: `translateY(${sectionParallax * 0.3}px)`,
+          transition: "transform 0.1s ease-out",
+        }}
+      >
         {isLoading ? (
           <ApplicationStatusSkeleton />
         ) : isMobile ? (
@@ -224,8 +282,20 @@ const Home = () => {
       </section>
 
       {/* Document Upload & Appointment Section */}
-      <section className="section-padding bg-muted/30 scroll-mt-20 transition-all duration-500 ease-in-out" id="manage-application">
-        <div className="container">
+      <section 
+        className="section-padding bg-muted/30 scroll-mt-20 transition-all duration-500 ease-in-out relative overflow-hidden" 
+        id="manage-application"
+      >
+        <div 
+          className="absolute inset-0 opacity-5 pointer-events-none"
+          style={{
+            transform: `translateY(${sectionParallax * 0.4}px)`,
+            transition: "transform 0.1s ease-out",
+          }}
+        >
+          <div className="absolute top-20 right-20 w-96 h-96 bg-accent rounded-full blur-3xl" />
+        </div>
+        <div className="container relative z-10">
           {isLoading ? (
             isMobile ? <ManagementSkeletonMobile /> : <ManagementSkeleton />
           ) : isMobile ? (
