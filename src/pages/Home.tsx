@@ -78,26 +78,29 @@ const Home = () => {
             staggerDelay={100}
             animation="fade-up"
           >
-            {quickNavItems.map((item, index) => (
-              <Link
-                key={index}
-                to={item.href}
-                className="group bg-card rounded-2xl p-6 border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-              >
-                <div className={`w-14 h-14 rounded-2xl ${item.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                  <item.icon className="w-7 h-7" />
-                </div>
-                <h3 className="font-semibold text-xl text-foreground mb-2 group-hover:text-primary transition-colors">
-                  {t(item.titleKey)}
-                </h3>
-                <p className="text-muted-foreground text-sm mb-4">
-                  {item.description}
-                </p>
-                <div className="flex items-center text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                  Explore <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Link>
-            ))}
+            {quickNavItems.map((item, index) => {
+              const IconComponent = item.icon;
+              return (
+                <Link
+                  key={index}
+                  to={item.href}
+                  className="group bg-card rounded-2xl p-6 border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                >
+                  <div className={`w-14 h-14 rounded-xl ${item.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shrink-0`}>
+                    <IconComponent className="w-7 h-7 shrink-0" />
+                  </div>
+                  <h3 className="font-semibold text-xl text-foreground mb-2 group-hover:text-primary transition-colors">
+                    {t(item.titleKey)}
+                  </h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    {item.description}
+                  </p>
+                  <div className="flex items-center text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                    Explore <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
+              );
+            })}
           </StaggerReveal>
         </div>
       </section>
