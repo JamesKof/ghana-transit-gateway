@@ -5,6 +5,7 @@ import { DocumentUpload } from "@/components/DocumentUpload";
 import { BackToTop } from "@/components/BackToTop";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { PullToRefresh } from "@/components/PullToRefresh";
+import { FloatingQuickActions } from "@/components/FloatingQuickActions";
 import { QuickNavSkeleton, QuickNavSkeletonMobile } from "@/components/skeletons/QuickNavSkeleton";
 import { ApplicationStatusSkeleton } from "@/components/skeletons/ApplicationStatusSkeleton";
 import { ManagementSkeleton, ManagementSkeletonMobile } from "@/components/skeletons/ManagementSkeleton";
@@ -106,6 +107,7 @@ const Home = () => {
   return (
     <>
       <ScrollProgress />
+      <FloatingQuickActions />
       {isMobile && (
         <PullToRefresh 
           pullDistance={pullDistance} 
