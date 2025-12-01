@@ -6,6 +6,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { MapPin, Building2, Plane, Ship, Clock, Phone, Search, Mail } from "lucide-react";
 import { GhanaMap } from "./GhanaMap";
 import { ScrollReveal, StaggerReveal } from "@/hooks/useScrollAnimation";
+import { PrintableDirectory } from "./PrintableDirectory";
+import { RegionalFeedbackForm } from "./RegionalFeedbackForm";
 
 const specialCommands = [
   {
@@ -150,15 +152,18 @@ export const RegionalCommandsSection = () => {
               <MapPin className="w-5 h-5 text-primary" />
               Regional Offices
             </h3>
-            <div className="relative w-full sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Search regions..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
-              />
+            <div className="flex flex-col sm:flex-row gap-3">
+              <PrintableDirectory />
+              <div className="relative w-full sm:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search regions..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
             </div>
           </div>
         </ScrollReveal>
@@ -267,6 +272,11 @@ export const RegionalCommandsSection = () => {
                     {selectedCommand.email}
                   </a>
                 </div>
+              </div>
+              
+              {/* Feedback Form Button */}
+              <div className="pt-2 border-t border-border">
+                <RegionalFeedbackForm region={selectedCommand.region} />
               </div>
             </div>
           )}
