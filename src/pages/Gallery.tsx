@@ -202,7 +202,7 @@ export default function Gallery() {
       </section>
 
       {/* Category Filter */}
-      <section className="section-padding bg-background">
+      <section className="section-padding bg-background-mint">
         <div className="container">
           <ScrollReveal animation="fade-up">
             <div className="flex flex-wrap justify-center gap-3 mb-12">

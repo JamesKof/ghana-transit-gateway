@@ -83,7 +83,7 @@ const About = () => {
       </section>
 
       {/* Tabs Section */}
-      <section className="section-padding bg-background">
+      <section className="section-padding bg-background-mint">
         <div className="container">
           <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full">
             <TabsList className="w-full flex-wrap h-auto gap-2 bg-muted/50 p-2 rounded-xl mb-8">

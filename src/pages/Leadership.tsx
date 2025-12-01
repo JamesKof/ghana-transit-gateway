@@ -74,7 +74,7 @@ const Leadership = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-b from-background via-primary/5 to-background">
+      <div className="min-h-screen bg-gradient-to-b from-background-mint via-background to-background-mint">
         {/* Hero Section */}
         <ScrollReveal>
           <div className="relative py-24 px-4 bg-gradient-to-r from-primary/20 via-primary/10 to-secondary/20">
