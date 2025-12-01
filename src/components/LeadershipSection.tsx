@@ -100,13 +100,6 @@ export const LeadershipSection = () => {
               onClick={() => setSelectedLeader(leader)}
             >
               <CardContent className="p-6 text-center">
-                <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-primary/20 group-hover:border-primary/40 transition-colors">
-                  <img 
-                    src={leader.image} 
-                    alt={leader.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
                 <Badge variant="outline" className="mb-3 text-xs">
                   {leader.role}
                 </Badge>
@@ -129,21 +122,12 @@ export const LeadershipSection = () => {
           </DialogHeader>
           {selectedLeader && (
             <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-primary/30 shrink-0">
-                  <img 
-                    src={selectedLeader.image} 
-                    alt={selectedLeader.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <Badge variant="secondary" className="mb-2 text-xs">
-                    {selectedLeader.role}
-                  </Badge>
-                  <h3 className="font-semibold text-foreground">{selectedLeader.name}</h3>
-                  <p className="text-sm text-primary font-medium">{selectedLeader.title}</p>
-                </div>
+              <div>
+                <Badge variant="secondary" className="mb-2 text-xs">
+                  {selectedLeader.role}
+                </Badge>
+                <h3 className="font-semibold text-foreground">{selectedLeader.name}</h3>
+                <p className="text-sm text-primary font-medium">{selectedLeader.title}</p>
               </div>
               
               <div>
