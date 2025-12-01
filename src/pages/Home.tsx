@@ -2,13 +2,17 @@ import { HeroSlider } from "@/components/HeroSlider";
 import { ApplicationStatusChecker } from "@/components/ApplicationStatusChecker";
 import { AppointmentBooking } from "@/components/AppointmentBooking";
 import { DocumentUpload } from "@/components/DocumentUpload";
+import { BackToTop } from "@/components/BackToTop";
+import { QuickNavSkeleton, QuickNavSkeletonMobile } from "@/components/skeletons/QuickNavSkeleton";
+import { ApplicationStatusSkeleton } from "@/components/skeletons/ApplicationStatusSkeleton";
+import { ManagementSkeleton, ManagementSkeletonMobile } from "@/components/skeletons/ManagementSkeleton";
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, FileText, Globe, Phone, BookOpen, Newspaper, ChevronDown } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ScrollReveal, StaggerReveal } from "@/hooks/useScrollAnimation";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const quickNavItems = [
   {
@@ -58,11 +62,21 @@ const quickNavItems = [
 const Home = () => {
   const { t } = useLanguage();
   const isMobile = useIsMobile();
+  const [isLoading, setIsLoading] = useState(true);
   const [openSections, setOpenSections] = useState({
     quickNav: true,
     statusChecker: true,
     management: true,
   });
+
+  useEffect(() => {
+    // Simulate initial loading
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const toggleSection = (section: keyof typeof openSections) => {
     setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -71,11 +85,14 @@ const Home = () => {
   return (
     <>
       <HeroSlider />
+      <BackToTop />
       
       {/* Quick Navigation Section */}
       <section className="section-padding bg-background scroll-mt-20 transition-all duration-500 ease-in-out" id="quick-navigation">
         <div className="container">
-          {isMobile ? (
+          {isLoading ? (
+            isMobile ? <QuickNavSkeletonMobile /> : <QuickNavSkeleton />
+          ) : isMobile ? (
             <Collapsible open={openSections.quickNav} onOpenChange={() => toggleSection('quickNav')}>
               <div className="mb-8">
                 <CollapsibleTrigger className="w-full group">
@@ -170,7 +187,9 @@ const Home = () => {
 
       {/* Application Status Checker */}
       <section className="scroll-mt-20 transition-all duration-500 ease-in-out" id="status-checker">
-        {isMobile ? (
+        {isLoading ? (
+          <ApplicationStatusSkeleton />
+        ) : isMobile ? (
           <Collapsible open={openSections.statusChecker} onOpenChange={() => toggleSection('statusChecker')}>
             <div className="section-padding bg-background">
               <div className="container">
@@ -207,7 +226,9 @@ const Home = () => {
       {/* Document Upload & Appointment Section */}
       <section className="section-padding bg-muted/30 scroll-mt-20 transition-all duration-500 ease-in-out" id="manage-application">
         <div className="container">
-          {isMobile ? (
+          {isLoading ? (
+            isMobile ? <ManagementSkeletonMobile /> : <ManagementSkeleton />
+          ) : isMobile ? (
             <Collapsible open={openSections.management} onOpenChange={() => toggleSection('management')}>
               <div className="mb-8">
                 <CollapsibleTrigger className="w-full group">
