@@ -2,7 +2,8 @@ import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { MapPin, Building2, Plane, Ship, Clock, Phone, Search } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { MapPin, Building2, Plane, Ship, Clock, Phone, Search, Mail } from "lucide-react";
 import { GhanaMap } from "./GhanaMap";
 import { ScrollReveal, StaggerReveal } from "@/hooks/useScrollAnimation";
 
@@ -26,27 +27,28 @@ const specialCommands = [
 ];
 
 const regionalCommands = [
-  { region: "Greater Accra Region", headquarters: "Accra", borderPosts: 3 },
-  { region: "Ashanti Region", headquarters: "Kumasi", borderPosts: 2 },
-  { region: "Western Region", headquarters: "Sekondi-Takoradi", borderPosts: 4 },
-  { region: "Central Region", headquarters: "Cape Coast", borderPosts: 2 },
-  { region: "Eastern Region", headquarters: "Koforidua", borderPosts: 3 },
-  { region: "Volta Region", headquarters: "Ho", borderPosts: 5 },
-  { region: "Northern Region", headquarters: "Tamale", borderPosts: 4 },
-  { region: "Upper East Region", headquarters: "Bolgatanga", borderPosts: 6 },
-  { region: "Upper West Region", headquarters: "Wa", borderPosts: 5 },
-  { region: "Bono Region", headquarters: "Sunyani", borderPosts: 2 },
-  { region: "Bono East Region", headquarters: "Techiman", borderPosts: 2 },
-  { region: "Ahafo Region", headquarters: "Goaso", borderPosts: 1 },
-  { region: "Western North Region", headquarters: "Sefwi Wiawso", borderPosts: 3 },
-  { region: "Oti Region", headquarters: "Dambai", borderPosts: 4 },
-  { region: "North East Region", headquarters: "Nalerigu", borderPosts: 3 },
-  { region: "Savannah Region", headquarters: "Damongo", borderPosts: 4 },
+  { region: "Greater Accra Region", headquarters: "Accra", borderPosts: 3, phone: "+233 302 258 250", email: "accra@gis.gov.gh" },
+  { region: "Ashanti Region", headquarters: "Kumasi", borderPosts: 2, phone: "+233 322 022 145", email: "kumasi@gis.gov.gh" },
+  { region: "Western Region", headquarters: "Sekondi-Takoradi", borderPosts: 4, phone: "+233 312 046 123", email: "takoradi@gis.gov.gh" },
+  { region: "Central Region", headquarters: "Cape Coast", borderPosts: 2, phone: "+233 332 132 456", email: "capecoast@gis.gov.gh" },
+  { region: "Eastern Region", headquarters: "Koforidua", borderPosts: 3, phone: "+233 342 022 789", email: "koforidua@gis.gov.gh" },
+  { region: "Volta Region", headquarters: "Ho", borderPosts: 5, phone: "+233 362 026 321", email: "ho@gis.gov.gh" },
+  { region: "Northern Region", headquarters: "Tamale", borderPosts: 4, phone: "+233 372 022 654", email: "tamale@gis.gov.gh" },
+  { region: "Upper East Region", headquarters: "Bolgatanga", borderPosts: 6, phone: "+233 382 022 987", email: "bolgatanga@gis.gov.gh" },
+  { region: "Upper West Region", headquarters: "Wa", borderPosts: 5, phone: "+233 392 022 147", email: "wa@gis.gov.gh" },
+  { region: "Bono Region", headquarters: "Sunyani", borderPosts: 2, phone: "+233 352 027 258", email: "sunyani@gis.gov.gh" },
+  { region: "Bono East Region", headquarters: "Techiman", borderPosts: 2, phone: "+233 352 522 369", email: "techiman@gis.gov.gh" },
+  { region: "Ahafo Region", headquarters: "Goaso", borderPosts: 1, phone: "+233 352 922 471", email: "goaso@gis.gov.gh" },
+  { region: "Western North Region", headquarters: "Sefwi Wiawso", borderPosts: 3, phone: "+233 312 922 582", email: "sefwiwiawso@gis.gov.gh" },
+  { region: "Oti Region", headquarters: "Dambai", borderPosts: 4, phone: "+233 362 922 693", email: "dambai@gis.gov.gh" },
+  { region: "North East Region", headquarters: "Nalerigu", borderPosts: 3, phone: "+233 372 922 714", email: "nalerigu@gis.gov.gh" },
+  { region: "Savannah Region", headquarters: "Damongo", borderPosts: 4, phone: "+233 372 522 825", email: "damongo@gis.gov.gh" },
 ];
 
 export const RegionalCommandsSection = () => {
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCommand, setSelectedCommand] = useState<typeof regionalCommands[0] | null>(null);
 
   const filteredRegions = useMemo(() => {
     if (!searchQuery.trim()) return regionalCommands;
@@ -183,7 +185,7 @@ export const RegionalCommandsSection = () => {
                 className={`group border-border/50 hover:border-primary/30 hover:shadow-md transition-all cursor-pointer ${
                   isSelected ? "ring-2 ring-primary border-primary" : ""
                 }`}
-                onClick={() => setSelectedRegion(isSelected ? null : command.region.replace(/\s+Region$/i, ""))}
+                onClick={() => setSelectedCommand(command)}
               >
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between mb-3">
@@ -201,10 +203,20 @@ export const RegionalCommandsSection = () => {
                   }`}>
                     {command.region}
                   </h4>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1 mb-2">
                     <Building2 className="w-3 h-3" />
                     HQ: {command.headquarters}
                   </p>
+                  <div className="space-y-1 pt-2 border-t border-border/50">
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Phone className="w-3 h-3 text-primary" />
+                      {command.phone}
+                    </p>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1 truncate">
+                      <Mail className="w-3 h-3 text-primary" />
+                      {command.email}
+                    </p>
+                  </div>
               </CardContent>
             </Card>
           );
@@ -212,6 +224,54 @@ export const RegionalCommandsSection = () => {
         </StaggerReveal>
         )}
       </div>
+
+      {/* Region Detail Modal */}
+      <Dialog open={!!selectedCommand} onOpenChange={() => setSelectedCommand(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-primary" />
+              {selectedCommand?.region}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedCommand && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                <Building2 className="w-5 h-5 text-primary" />
+                <div>
+                  <p className="text-sm font-medium">Headquarters</p>
+                  <p className="text-sm text-muted-foreground">{selectedCommand.headquarters}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                <MapPin className="w-5 h-5 text-primary" />
+                <div>
+                  <p className="text-sm font-medium">Border Posts</p>
+                  <p className="text-sm text-muted-foreground">{selectedCommand.borderPosts} active border posts</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                <Phone className="w-5 h-5 text-primary" />
+                <div>
+                  <p className="text-sm font-medium">Phone</p>
+                  <a href={`tel:${selectedCommand.phone}`} className="text-sm text-primary hover:underline">
+                    {selectedCommand.phone}
+                  </a>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                <Mail className="w-5 h-5 text-primary" />
+                <div>
+                  <p className="text-sm font-medium">Email</p>
+                  <a href={`mailto:${selectedCommand.email}`} className="text-sm text-primary hover:underline">
+                    {selectedCommand.email}
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Contact Information */}
       <ScrollReveal animation="fade-up" delay={400}>

@@ -1,14 +1,32 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { User, Users, Crown, Award } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Users, Crown, Award, Phone, Mail, MapPin, Briefcase } from "lucide-react";
 
-const leadership = [
+interface Leader {
+  name: string;
+  title: string;
+  description: string;
+  role: string;
+  image: string;
+  fullBio: string;
+  phone: string;
+  email: string;
+  office: string;
+}
+
+const leadership: Leader[] = [
   {
     name: "Comptroller-General of Immigration",
     title: "Head of Service",
     description: "The Comptroller-General is the administrative head of the Ghana Immigration Service, responsible for the overall management and strategic direction of the Service.",
     role: "Executive Head",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
+    fullBio: "The Comptroller-General serves as the chief executive officer of the Ghana Immigration Service. With over 30 years of distinguished service, the CG provides strategic leadership and ensures the effective implementation of immigration policies. Responsibilities include overseeing all operational, administrative, and financial aspects of the Service, representing GIS at national and international forums, and advising government on immigration matters.",
+    phone: "+233 302 258 250",
+    email: "cg@gis.gov.gh",
+    office: "GIS Headquarters, Independence Avenue, Accra",
   },
   {
     name: "Deputy Comptroller-General (Operations)",
@@ -16,6 +34,10 @@ const leadership = [
     description: "Oversees all operational activities including border management, enforcement, and investigation units across all entry points.",
     role: "Operations",
     image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
+    fullBio: "The Deputy Comptroller-General (Operations) is responsible for the day-to-day operational activities of the Service. This includes supervising border control operations at all ports of entry, coordinating enforcement activities, managing investigation units, and ensuring compliance with immigration laws. The DCG Operations works closely with regional commanders to maintain effective border security nationwide.",
+    phone: "+233 302 258 251",
+    email: "dcg.operations@gis.gov.gh",
+    office: "GIS Headquarters, Independence Avenue, Accra",
   },
   {
     name: "Deputy Comptroller-General (Finance & Admin)",
@@ -23,6 +45,10 @@ const leadership = [
     description: "Manages financial operations, human resources, procurement, and administrative functions of the Service.",
     role: "Finance & Admin",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=face",
+    fullBio: "The Deputy Comptroller-General (Finance & Administration) oversees all financial and administrative operations of the Ghana Immigration Service. Key responsibilities include budget preparation and management, human resource development, procurement processes, and ensuring proper utilization of Service resources. The DCG Finance & Admin also coordinates training programs and welfare initiatives for all personnel.",
+    phone: "+233 302 258 252",
+    email: "dcg.finance@gis.gov.gh",
+    office: "GIS Headquarters, Independence Avenue, Accra",
   },
 ];
 
@@ -47,6 +73,8 @@ const managementCommittee = [
 ];
 
 export const LeadershipSection = () => {
+  const [selectedLeader, setSelectedLeader] = useState<Leader | null>(null);
+
   return (
     <div className="space-y-16">
       {/* Executive Leadership */}
@@ -66,7 +94,11 @@ export const LeadershipSection = () => {
 
         <div className="grid md:grid-cols-3 gap-6">
           {leadership.map((leader, index) => (
-            <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-border/50">
+            <Card 
+              key={index} 
+              className="group hover:shadow-lg transition-all duration-300 border-border/50 cursor-pointer"
+              onClick={() => setSelectedLeader(leader)}
+            >
               <CardContent className="p-6 text-center">
                 <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-primary/20 group-hover:border-primary/40 transition-colors">
                   <img 
@@ -88,6 +120,74 @@ export const LeadershipSection = () => {
           ))}
         </div>
       </div>
+
+      {/* Leadership Profile Modal */}
+      <Dialog open={!!selectedLeader} onOpenChange={() => setSelectedLeader(null)}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-xl">Leadership Profile</DialogTitle>
+          </DialogHeader>
+          {selectedLeader && (
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-primary/30 shrink-0">
+                  <img 
+                    src={selectedLeader.image} 
+                    alt={selectedLeader.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <Badge variant="secondary" className="mb-2 text-xs">
+                    {selectedLeader.role}
+                  </Badge>
+                  <h3 className="font-semibold text-foreground">{selectedLeader.name}</h3>
+                  <p className="text-sm text-primary font-medium">{selectedLeader.title}</p>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                  <Briefcase className="w-4 h-4 text-primary" />
+                  Biography
+                </h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {selectedLeader.fullBio}
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-semibold text-sm">Contact Information</h4>
+                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <Phone className="w-4 h-4 text-primary shrink-0" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Phone</p>
+                    <a href={`tel:${selectedLeader.phone}`} className="text-sm text-primary hover:underline">
+                      {selectedLeader.phone}
+                    </a>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <Mail className="w-4 h-4 text-primary shrink-0" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Email</p>
+                    <a href={`mailto:${selectedLeader.email}`} className="text-sm text-primary hover:underline">
+                      {selectedLeader.email}
+                    </a>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <MapPin className="w-4 h-4 text-primary shrink-0" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Office</p>
+                    <p className="text-sm text-foreground">{selectedLeader.office}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* GIS Council */}
       <div>
