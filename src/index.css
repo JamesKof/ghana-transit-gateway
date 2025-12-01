@@ -128,9 +128,22 @@
     @apply border-border;
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+.active\:scale-98:active {
+  transform: scale(0.98);
+}
 
   body {
     @apply text-foreground font-sans antialiased;
