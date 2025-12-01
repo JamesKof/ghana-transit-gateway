@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ScrollReveal, StaggerReveal } from "@/hooks/useScrollAnimation";
-import { Camera, Users, Building2, Globe, Award, Heart, Briefcase, Shield } from "lucide-react";
+import { Camera, Users, Building2, Globe, Award, Heart, Briefcase, Shield, Loader2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ImageLightbox } from "@/components/ImageLightbox";
 
 // Sample gallery images - these would typically come from a backend/API
 const galleryCategories = [
@@ -110,11 +111,55 @@ const galleryCategories = [
 export default function Gallery() {
   const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [displayedCount, setDisplayedCount] = useState(6);
+  const [isLoading, setIsLoading] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const observerRef = useRef<HTMLDivElement>(null);
 
-  const filteredImages =
+  const allImages =
     selectedCategory === "all"
       ? galleryCategories.flatMap((cat) => cat.images)
       : galleryCategories.find((cat) => cat.id === selectedCategory)?.images || [];
+
+  const displayedImages = allImages.slice(0, displayedCount);
+  const hasMore = displayedCount < allImages.length;
+
+  // Reset displayed count when category changes
+  useEffect(() => {
+    setDisplayedCount(6);
+  }, [selectedCategory]);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    if (!observerRef.current || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoading) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(observerRef.current);
+
+    return () => observer.disconnect();
+  }, [hasMore, isLoading, displayedCount]);
+
+  const loadMore = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setDisplayedCount((prev) => Math.min(prev + 6, allImages.length));
+      setIsLoading(false);
+    }, 800);
+  };
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  };
 
   return (
     <div className="min-h-screen">
@@ -174,15 +219,12 @@ export default function Gallery() {
           </ScrollReveal>
 
           {/* Gallery Grid */}
-          <StaggerReveal
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-            staggerDelay={100}
-            animation="fade-up"
-          >
-            {filteredImages.map((image) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {displayedImages.map((image, index) => (
               <div
                 key={image.id}
-                className="group relative bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+                onClick={() => openLightbox(index)}
+                className="group relative bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer"
               >
                 {/* Placeholder Image */}
                 <div className="aspect-[4/3] bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 flex items-center justify-center relative overflow-hidden">
@@ -193,6 +235,9 @@ export default function Gallery() {
                   <div className="absolute inset-0 flex flex-col justify-end p-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <h3 className="font-semibold text-lg mb-2">{image.title}</h3>
                     <p className="text-sm text-white/90">{image.description}</p>
+                    <div className="mt-3 text-xs bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full inline-block">
+                      Click to view full size
+                    </div>
                   </div>
                 </div>
 
@@ -207,10 +252,38 @@ export default function Gallery() {
                 </div>
               </div>
             ))}
-          </StaggerReveal>
+          </div>
+
+          {/* Loading Indicator & Observer Target */}
+          {hasMore && (
+            <div ref={observerRef} className="flex justify-center items-center py-12">
+              {isLoading ? (
+                <div className="flex flex-col items-center gap-3">
+                  <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                  <p className="text-sm text-muted-foreground">Loading more images...</p>
+                </div>
+              ) : (
+                <button
+                  onClick={loadMore}
+                  className="px-8 py-3 bg-primary text-primary-foreground rounded-2xl font-semibold hover:bg-primary/90 transition-all duration-300 hover:scale-105"
+                >
+                  Load More Images
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* All Loaded Message */}
+          {!hasMore && allImages.length > 0 && (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">
+                You've viewed all {allImages.length} images in this category
+              </p>
+            </div>
+          )}
 
           {/* Empty State */}
-          {filteredImages.length === 0 && (
+          {allImages.length === 0 && (
             <div className="text-center py-20">
               <Camera className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-foreground mb-2">No images found</h3>
@@ -219,6 +292,16 @@ export default function Gallery() {
           )}
         </div>
       </section>
+
+      {/* Lightbox */}
+      {lightboxOpen && (
+        <ImageLightbox
+          images={allImages}
+          currentIndex={lightboxIndex}
+          onClose={() => setLightboxOpen(false)}
+          onNavigate={setLightboxIndex}
+        />
+      )}
 
       {/* Call to Action */}
       <ScrollReveal animation="fade-up">
