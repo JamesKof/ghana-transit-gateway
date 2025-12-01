@@ -8,18 +8,21 @@ const leadership = [
     title: "Head of Service",
     description: "The Comptroller-General is the administrative head of the Ghana Immigration Service, responsible for the overall management and strategic direction of the Service.",
     role: "Executive Head",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
   },
   {
     name: "Deputy Comptroller-General (Operations)",
     title: "DCG Operations",
     description: "Oversees all operational activities including border management, enforcement, and investigation units across all entry points.",
     role: "Operations",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
   },
   {
     name: "Deputy Comptroller-General (Finance & Admin)",
     title: "DCG Finance & Administration",
     description: "Manages financial operations, human resources, procurement, and administrative functions of the Service.",
     role: "Finance & Admin",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=face",
   },
 ];
 
@@ -65,8 +68,12 @@ export const LeadershipSection = () => {
           {leadership.map((leader, index) => (
             <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-border/50">
               <CardContent className="p-6 text-center">
-                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border-2 border-primary/20 group-hover:border-primary/40 transition-colors">
-                  <User className="w-12 h-12 text-primary/60" />
+                <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-primary/20 group-hover:border-primary/40 transition-colors">
+                  <img 
+                    src={leader.image} 
+                    alt={leader.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <Badge variant="outline" className="mb-3 text-xs">
                   {leader.role}
