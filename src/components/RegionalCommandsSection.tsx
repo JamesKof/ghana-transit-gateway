@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Building2, Plane, Ship, Clock, Phone } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { MapPin, Building2, Plane, Ship, Clock, Phone, Search } from "lucide-react";
 import { GhanaMap } from "./GhanaMap";
 import { ScrollReveal, StaggerReveal } from "@/hooks/useScrollAnimation";
 
@@ -45,6 +46,17 @@ const regionalCommands = [
 
 export const RegionalCommandsSection = () => {
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredRegions = useMemo(() => {
+    if (!searchQuery.trim()) return regionalCommands;
+    const query = searchQuery.toLowerCase();
+    return regionalCommands.filter(
+      (command) =>
+        command.region.toLowerCase().includes(query) ||
+        command.headquarters.toLowerCase().includes(query)
+    );
+  }, [searchQuery]);
 
   const handleRegionClick = (regionName: string) => {
     setSelectedRegion(regionName === selectedRegion ? null : regionName);
@@ -131,17 +143,36 @@ export const RegionalCommandsSection = () => {
       {/* Regional Commands Grid */}
       <div>
         <ScrollReveal animation="fade-up" delay={300}>
-          <h3 className="font-serif text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-primary" />
-            Regional Offices
-          </h3>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <h3 className="font-serif text-xl font-bold text-foreground flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-primary" />
+              Regional Offices
+            </h3>
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search regions..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+          </div>
         </ScrollReveal>
+        
+        {filteredRegions.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground">
+            <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
+            <p>No regions found matching "{searchQuery}"</p>
+          </div>
+        ) : (
         <StaggerReveal
           className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"
           staggerDelay={50}
           animation="fade-up"
         >
-          {regionalCommands.map((command, index) => {
+          {filteredRegions.map((command, index) => {
             const regionId = command.region.toLowerCase().replace(/\s+region$/i, "").replace(/\s/g, "-");
             const isSelected = selectedRegion?.toLowerCase().replace(/\s/g, "-") === regionId;
             
@@ -174,11 +205,12 @@ export const RegionalCommandsSection = () => {
                     <Building2 className="w-3 h-3" />
                     HQ: {command.headquarters}
                   </p>
-                </CardContent>
-              </Card>
-            );
-          })}
+              </CardContent>
+            </Card>
+          );
+        })}
         </StaggerReveal>
+        )}
       </div>
 
       {/* Contact Information */}
