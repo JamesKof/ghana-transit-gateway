@@ -5,6 +5,7 @@ import { LeadershipSection } from "@/components/LeadershipSection";
 import { DirectoratesSection } from "@/components/DirectoratesSection";
 import { RegionalCommandsSection } from "@/components/RegionalCommandsSection";
 import { GISStructureSection } from "@/components/GISStructureSection";
+import { OrgChart } from "@/components/OrgChart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollReveal, StaggerReveal } from "@/hooks/useScrollAnimation";
 import { Users, Award, Globe, Shield, Calendar, Building, MapPin, Briefcase, Crown } from "lucide-react";
@@ -187,9 +188,14 @@ const About = () => {
               </TabsContent>
 
               <TabsContent value="structure">
-                <ScrollReveal animation="fade-up">
-                  <GISStructureSection />
-                </ScrollReveal>
+                <div className="space-y-16">
+                  <ScrollReveal animation="fade-up">
+                    <OrgChart />
+                  </ScrollReveal>
+                  <ScrollReveal animation="fade-up" delay={200}>
+                    <GISStructureSection />
+                  </ScrollReveal>
+                </div>
               </TabsContent>
 
               <TabsContent value="leadership">

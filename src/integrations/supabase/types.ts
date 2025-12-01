@@ -125,6 +125,48 @@ export type Database = {
         }
         Relationships: []
       }
+      regional_feedback: {
+        Row: {
+          created_at: string
+          email: string
+          feedback_type: string
+          id: string
+          message: string
+          name: string
+          phone: string | null
+          region: string
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          feedback_type?: string
+          id?: string
+          message: string
+          name: string
+          phone?: string | null
+          region: string
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          feedback_type?: string
+          id?: string
+          message?: string
+          name?: string
+          phone?: string | null
+          region?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
