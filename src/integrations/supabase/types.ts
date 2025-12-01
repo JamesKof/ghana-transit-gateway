@@ -47,6 +47,54 @@ export type Database = {
         }
         Relationships: []
       }
+      leadership_profiles: {
+        Row: {
+          created_at: string
+          description: string
+          display_order: number
+          email: string
+          full_bio: string
+          id: string
+          image_url: string | null
+          name: string
+          office: string
+          phone: string
+          role: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          display_order?: number
+          email: string
+          full_bio: string
+          id?: string
+          image_url?: string | null
+          name: string
+          office: string
+          phone: string
+          role: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          email?: string
+          full_bio?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          office?: string
+          phone?: string
+          role?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notification_logs: {
         Row: {
           application_id: string | null
