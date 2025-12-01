@@ -129,7 +129,7 @@ const Home = () => {
       
       {/* Quick Navigation Section */}
       <section 
-        className="section-padding bg-background scroll-mt-20 transition-all duration-500 ease-in-out relative overflow-hidden" 
+        className="section-padding bg-background-mint scroll-mt-20 transition-all duration-500 ease-in-out relative overflow-hidden" 
         id="quick-navigation"
       >
         <div 
@@ -285,7 +285,7 @@ const Home = () => {
 
       {/* Document Upload & Appointment Section */}
       <section 
-        className="section-padding bg-muted/30 scroll-mt-20 transition-all duration-500 ease-in-out relative overflow-hidden" 
+        className="section-padding bg-background-mint scroll-mt-20 transition-all duration-500 ease-in-out relative overflow-hidden" 
         id="manage-application"
       >
         <div 

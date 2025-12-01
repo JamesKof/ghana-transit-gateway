@@ -8,7 +8,7 @@ const Permits = () => {
       <PermitsSection />
       
       {/* Application Tools Section */}
-      <section className="section-padding bg-muted/30">
+      <section className="section-padding bg-background-mint">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <span className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 text-secondary text-sm font-semibold mb-4">

@@ -37,7 +37,7 @@ const News = () => {
       </ScrollReveal>
       
       {/* Press Releases Section */}
-      <section className="section-padding bg-muted/30">
+      <section className="section-padding bg-background-mint">
         <div className="container">
           <ScrollReveal animation="fade-up">
             <div className="text-center max-w-3xl mx-auto mb-12">
