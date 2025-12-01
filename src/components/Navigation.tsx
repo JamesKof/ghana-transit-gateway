@@ -24,6 +24,7 @@ const navItems = [
   { labelKey: "nav.permits", href: "/permits", icon: Stamp },
   { labelKey: "nav.news", href: "/news", icon: Newspaper },
   { labelKey: "Gallery", href: "/gallery", icon: Camera },
+  { labelKey: "Leadership", href: "/leadership", icon: Crown },
   { labelKey: "nav.contact", href: "/contact", icon: Phone },
   { labelKey: "nav.resources", href: "/resources", icon: HelpCircle },
 ];
