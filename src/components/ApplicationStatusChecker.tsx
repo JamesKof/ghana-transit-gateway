@@ -172,42 +172,42 @@ export function ApplicationStatusChecker() {
 
           {/* Result */}
           {result && (
-            <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden animate-fade-up">
+            <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden animate-fade-up min-h-[400px] flex flex-col">
               {/* Status Header */}
-              <div className={`p-6 border-b ${getStatusColor(result.status)}`}>
+              <div className={`p-8 border-b ${getStatusColor(result.status)} flex-shrink-0`}>
                 <div className="flex items-center gap-4">
                   {getStatusIcon(result.status)}
                   <div>
                     <p className="text-sm font-medium opacity-80">Application Status</p>
-                    <p className="text-2xl font-bold capitalize">{result.status}</p>
+                    <p className="text-3xl font-bold capitalize">{result.status}</p>
                   </div>
                 </div>
               </div>
 
               {/* Details */}
-              <div className="p-6 space-y-4">
-                <div className="grid sm:grid-cols-2 gap-4">
+              <div className="p-8 space-y-4 flex-grow">
+                <div className="grid sm:grid-cols-2 gap-6">
                   <div>
-                    <p className="text-sm text-muted-foreground">Reference Number</p>
-                    <p className="font-semibold text-foreground">{result.referenceNumber}</p>
+                    <p className="text-sm text-muted-foreground mb-1">Reference Number</p>
+                    <p className="font-semibold text-lg text-foreground">{result.referenceNumber}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Application Type</p>
-                    <p className="font-semibold text-foreground">{result.applicationType}</p>
+                    <p className="text-sm text-muted-foreground mb-1">Application Type</p>
+                    <p className="font-semibold text-lg text-foreground">{result.applicationType}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Applicant Name</p>
-                    <p className="font-semibold text-foreground">{result.applicantName}</p>
+                    <p className="text-sm text-muted-foreground mb-1">Applicant Name</p>
+                    <p className="font-semibold text-lg text-foreground">{result.applicantName}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Submission Date</p>
-                    <p className="font-semibold text-foreground">{result.submissionDate}</p>
+                    <p className="text-sm text-muted-foreground mb-1">Submission Date</p>
+                    <p className="font-semibold text-lg text-foreground">{result.submissionDate}</p>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-border">
+                <div className="pt-6 border-t border-border">
                   <p className="text-sm text-muted-foreground mb-2">Status Message</p>
-                  <p className="text-foreground">{result.statusMessage}</p>
+                  <p className="text-foreground leading-relaxed">{result.statusMessage}</p>
                 </div>
 
                 {result.expectedCompletion && (
@@ -219,7 +219,7 @@ export function ApplicationStatusChecker() {
               </div>
 
               {/* Actions */}
-              <div className="p-6 bg-muted/30 border-t border-border">
+              <div className="p-8 bg-muted/30 border-t border-border flex-shrink-0">
                 <p className="text-sm text-muted-foreground mb-3">Need assistance?</p>
                 <div className="flex flex-wrap gap-3">
                   <Button variant="outline" size="sm" asChild>

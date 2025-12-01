@@ -206,8 +206,8 @@ Ghana Immigration Service
   }
 
   return (
-    <div className="bg-card rounded-2xl p-8 shadow-lg border border-border">
-      <div className="text-center mb-8">
+    <div className="bg-card rounded-2xl p-8 shadow-md border border-border min-h-[500px] flex flex-col">
+      <div className="text-center mb-8 flex-shrink-0">
         <h3 className="text-2xl font-serif font-bold text-foreground mb-2">
           {t("appointment.title")}
         </h3>

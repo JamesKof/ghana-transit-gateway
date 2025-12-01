@@ -74,7 +74,7 @@ const Home = () => {
           </ScrollReveal>
           
           <StaggerReveal
-            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
             staggerDelay={100}
             animation="fade-up"
           >
@@ -84,19 +84,19 @@ const Home = () => {
                 <Link
                   key={index}
                   to={item.href}
-                  className="group bg-card rounded-2xl p-8 border border-border shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col min-h-[240px]"
+                  className="group bg-card rounded-2xl p-10 border border-border shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col min-h-[280px] w-full"
                 >
-                  <div className={`w-16 h-16 rounded-xl ${item.color} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform flex-shrink-0`}>
-                    <IconComponent className="w-8 h-8 flex-shrink-0" />
+                  <div className={`w-20 h-20 rounded-2xl ${item.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform flex-shrink-0`}>
+                    <IconComponent className="w-10 h-10 flex-shrink-0" strokeWidth={2} />
                   </div>
-                  <h3 className="font-semibold text-xl text-foreground mb-3 group-hover:text-primary transition-colors flex-shrink-0">
+                  <h3 className="font-semibold text-2xl text-foreground mb-4 group-hover:text-primary transition-colors flex-shrink-0 leading-tight">
                     {t(item.titleKey)}
                   </h3>
-                  <p className="text-muted-foreground text-sm mb-5 flex-grow leading-relaxed">
+                  <p className="text-muted-foreground text-base mb-6 flex-grow leading-relaxed">
                     {item.description}
                   </p>
-                  <div className="flex items-center text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                    Explore <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                  <div className="flex items-center text-primary text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-auto">
+                    Explore <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform flex-shrink-0" strokeWidth={2.5} />
                   </div>
                 </Link>
               );
