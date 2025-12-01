@@ -174,13 +174,13 @@ export function DocumentUpload() {
   };
 
   return (
-    <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-          <Upload className="w-6 h-6 text-primary" />
+    <div className="bg-card rounded-2xl border border-border p-8 shadow-md min-h-[500px] flex flex-col">
+      <div className="flex items-center gap-3 mb-6 flex-shrink-0">
+        <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+          <Upload className="w-7 h-7 text-primary" />
         </div>
         <div>
-          <h3 className="font-semibold text-xl text-foreground">Document Upload</h3>
+          <h3 className="font-semibold text-2xl text-foreground">Document Upload</h3>
           <p className="text-sm text-muted-foreground">Submit supporting documents for your application</p>
         </div>
       </div>
