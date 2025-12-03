@@ -3,7 +3,6 @@ import { ApplicationStatusChecker } from "@/components/ApplicationStatusChecker"
 import { AppointmentBooking } from "@/components/AppointmentBooking";
 import { BackToTop } from "@/components/BackToTop";
 import { ScrollProgress } from "@/components/ScrollProgress";
-import { ScrollProgress } from "@/components/ScrollProgress";
 import { PullToRefresh } from "@/components/PullToRefresh";
 import { FloatingQuickActions } from "@/components/FloatingQuickActions";
 import { QuickNavSkeleton, QuickNavSkeletonMobile } from "@/components/skeletons/QuickNavSkeleton";
