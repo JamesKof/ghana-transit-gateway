@@ -9,6 +9,7 @@ import { Layout } from "@/components/Layout";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Services from "./pages/Services";
+import EVisa from "./pages/EVisa";
 import Permits from "./pages/Permits";
 import News from "./pages/News";
 import Resources from "./pages/Resources";
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/" element={<Layout><Home /></Layout>} />
                 <Route path="/about" element={<Layout><About /></Layout>} />
                 <Route path="/services" element={<Layout><Services /></Layout>} />
+                <Route path="/e-visa" element={<Layout><EVisa /></Layout>} />
                 <Route path="/permits" element={<Layout><Permits /></Layout>} />
                 <Route path="/news" element={<Layout><News /></Layout>} />
                 <Route path="/resources" element={<Layout><Resources /></Layout>} />

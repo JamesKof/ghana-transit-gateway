@@ -1,8 +1,8 @@
 import { HeroSlider } from "@/components/HeroSlider";
 import { ApplicationStatusChecker } from "@/components/ApplicationStatusChecker";
 import { AppointmentBooking } from "@/components/AppointmentBooking";
-import { DocumentUpload } from "@/components/DocumentUpload";
 import { BackToTop } from "@/components/BackToTop";
+import { ScrollProgress } from "@/components/ScrollProgress";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { PullToRefresh } from "@/components/PullToRefresh";
 import { FloatingQuickActions } from "@/components/FloatingQuickActions";
@@ -11,6 +11,7 @@ import { ApplicationStatusSkeleton } from "@/components/skeletons/ApplicationSta
 import { ManagementSkeleton, ManagementSkeletonMobile } from "@/components/skeletons/ManagementSkeleton";
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, FileText, Globe, Phone, BookOpen, Newspaper, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ScrollReveal, StaggerReveal } from "@/hooks/useScrollAnimation";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -322,7 +323,23 @@ const Home = () => {
                 </CollapsibleTrigger>
                 <CollapsibleContent className="mt-6 animate-accordion-down">
                   <div className="space-y-6">
-                    <DocumentUpload />
+                    <div className="bg-card rounded-2xl p-6 border border-border shadow-md flex flex-col gap-4">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-1">Online service</p>
+                        <h3 className="font-serif text-2xl font-bold text-foreground">
+                          Apply for Ghana e-Visa
+                        </h3>
+                        <p className="mt-2 text-sm text-muted-foreground">
+                          Start a secure e-visa application and pay online with Paystack before you travel.
+                        </p>
+                      </div>
+                      <Button asChild className="w-full sm:w-auto">
+                        <Link to="/e-visa">
+                          Start e-Visa application
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Link>
+                      </Button>
+                    </div>
                     <AppointmentBooking />
                   </div>
                 </CollapsibleContent>
@@ -336,13 +353,35 @@ const Home = () => {
                     Manage Your Application
                   </h2>
                   <p className="text-muted-foreground">
-                    Upload documents or book an appointment at any GIS office
+                    Start a Ghana e-visa application online or book an appointment at any GIS office
                   </p>
                 </div>
               </ScrollReveal>
               <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                 <ScrollReveal animation="fade-right" delay={100}>
-                  <DocumentUpload />
+                  <div className="h-full bg-card rounded-3xl p-8 border border-border shadow-lg flex flex-col justify-between">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-2">Online e-Visa</p>
+                      <h3 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-3">
+                        Start your Ghana e-Visa application
+                      </h3>
+                      <p className="text-sm sm:text-base text-muted-foreground">
+                        Check your eligibility, complete the short application form and pay your visa fee securely with
+                        Paystack.
+                      </p>
+                    </div>
+                    <div className="mt-6">
+                      <Button asChild className="w-full sm:w-auto">
+                        <Link to="/e-visa">
+                          Apply for e-Visa
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Link>
+                      </Button>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Average completion time: under 10 minutes.
+                      </p>
+                    </div>
+                  </div>
                 </ScrollReveal>
                 <ScrollReveal animation="fade-left" delay={200}>
                   <AppointmentBooking />
