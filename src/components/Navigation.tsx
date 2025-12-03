@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
-import { Menu, X, Home, Building2, FileText, Stamp, Newspaper, Phone, HelpCircle, Search, ChevronDown, Shield, Calendar, Crown, Briefcase, MapPin, Camera, Globe2 } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, Building2, FileText, Stamp, Newspaper, Phone, HelpCircle, Search, ChevronDown, Shield, Calendar, Crown, Briefcase, MapPin, Camera, Globe2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SearchModal } from "./SearchModal";
 import { DarkModeToggle } from "./DarkModeToggle";
@@ -15,19 +15,17 @@ const aboutSubItems = [
   { label: "Leadership", href: "/about?tab=leadership", icon: Crown },
   { label: "Directorates", href: "/about?tab=directorates", icon: Briefcase },
   { label: "Regional Commands", href: "/about?tab=regional", icon: MapPin },
+  { label: "Leadership Profiles", href: "/leadership", icon: Crown },
 ];
 
-const navItems = [
-  { labelKey: "nav.home", href: "/", icon: Home },
-  { labelKey: "nav.about", href: "/about", icon: Building2, hasDropdown: true },
-  { labelKey: "E-Visa", href: "/e-visa", icon: Globe2 },
-  { labelKey: "nav.services", href: "/services", icon: FileText },
-  { labelKey: "nav.permits", href: "/permits", icon: Stamp },
-  { labelKey: "nav.news", href: "/news", icon: Newspaper },
-  { labelKey: "Gallery", href: "/gallery", icon: Camera },
-  { labelKey: "Leadership", href: "/leadership", icon: Crown },
-  { labelKey: "nav.contact", href: "/contact", icon: Phone },
-  { labelKey: "nav.resources", href: "/resources", icon: HelpCircle },
+const servicesSubItems = [
+  { label: "All Services", href: "/services", icon: FileText },
+  { label: "Permits & Passes", href: "/permits", icon: Stamp },
+];
+
+const mediaSubItems = [
+  { label: "News & Updates", href: "/news", icon: Newspaper },
+  { label: "Photo Gallery", href: "/gallery", icon: Camera },
 ];
 
 export function Navigation() {
@@ -36,7 +34,11 @@ export function Navigation() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
+  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
+  const [mediaDropdownOpen, setMediaDropdownOpen] = useState(false);
   const [mobileAboutExpanded, setMobileAboutExpanded] = useState(false);
+  const [mobileServicesExpanded, setMobileServicesExpanded] = useState(false);
+  const [mobileMediaExpanded, setMobileMediaExpanded] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const { t } = useLanguage();
@@ -71,6 +73,8 @@ export function Navigation() {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setAboutDropdownOpen(false);
+        setServicesDropdownOpen(false);
+        setMediaDropdownOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -83,6 +87,16 @@ export function Navigation() {
     }
     return location.pathname === href;
   };
+
+  const isAboutActive =
+    location.pathname === "/about" || location.pathname === "/leadership";
+  const isServicesActive =
+    location.pathname === "/services" || location.pathname === "/permits";
+  const isEVisaActive = location.pathname === "/e-visa";
+  const isMediaActive =
+    location.pathname === "/news" || location.pathname === "/gallery";
+  const isResourcesActive = location.pathname === "/resources";
+  const isContactActive = location.pathname === "/contact";
 
   return (
     <>
@@ -101,7 +115,7 @@ export function Navigation() {
           WebkitBackdropFilter: 'blur(20px)',
         }}
       >
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between" ref={dropdownRef}>
           {/* Logo - Only Icon */}
           <Link to="/" className="flex items-center group">
             <img
@@ -113,79 +127,233 @@ export function Navigation() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
-            {navItems.map((item, index) => (
-              item.hasDropdown ? (
-                <div
-                  key={item.labelKey}
-                  ref={dropdownRef}
-                  className="relative"
-                  onMouseEnter={() => setAboutDropdownOpen(true)}
-                  onMouseLeave={() => setAboutDropdownOpen(false)}
-                >
-                  <Link
-                    to={item.href}
-                    className={`relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
-                      isActive(item.href)
-                        ? "bg-primary/10 text-primary shadow-sm"
-                        : "text-foreground/80 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_15px_hsl(155_100%_21%/0.15)]"
-                    } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
-                    style={{ 
-                      transitionDelay: isVisible ? `${150 + index * 50}ms` : '0ms',
-                    }}
-                  >
-                    <item.icon className="w-4 h-4" />
-                    {t(item.labelKey)}
-                    <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${aboutDropdownOpen ? "rotate-180" : ""}`} />
-                  </Link>
-                  
-                  {/* Dropdown Menu */}
-                  <div
-                    className={`absolute top-full left-0 mt-2 w-56 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-xl overflow-hidden transition-all duration-200 ${
-                      aboutDropdownOpen 
-                        ? "opacity-100 visible translate-y-0" 
-                        : "opacity-0 invisible -translate-y-2"
-                    }`}
-                    style={{
-                      backdropFilter: 'blur(20px)',
-                      WebkitBackdropFilter: 'blur(20px)',
-                    }}
-                  >
-                    <div className="py-2">
-                      {aboutSubItems.map((subItem, subIndex) => (
-                        <Link
-                          key={subItem.label}
-                          to={subItem.href}
-                          onClick={() => setAboutDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-primary hover:bg-primary/5 transition-colors"
-                          style={{
-                            animationDelay: `${subIndex * 50}ms`,
-                          }}
-                        >
-                          <subItem.icon className="w-4 h-4 text-primary/60" />
-                          {subItem.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
+            {/* About dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => {
+                setAboutDropdownOpen(true);
+                setServicesDropdownOpen(false);
+                setMediaDropdownOpen(false);
+              }}
+              onMouseLeave={() => setAboutDropdownOpen(false)}
+            >
+              <button
+                type="button"
+                className={`relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  isAboutActive
+                    ? "bg-primary/10 text-primary shadow-sm"
+                    : "text-foreground/80 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_15px_hsl(155_100%_21%/0.15)]"
+                } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
+                style={{
+                  transitionDelay: isVisible ? "150ms" : "0ms",
+                }}
+              >
+                <Building2 className="w-4 h-4" />
+                {t("nav.about")}
+                <ChevronDown
+                  className={`w-3 h-3 transition-transform duration-200 ${
+                    aboutDropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              <div
+                className={`absolute top-full left-0 mt-2 w-56 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-xl overflow-hidden transition-all duration-200 ${
+                  aboutDropdownOpen
+                    ? "opacity-100 visible translate-y-0"
+                    : "opacity-0 invisible -translate-y-2"
+                }`}
+                style={{
+                  backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
+                }}
+              >
+                <div className="py-2">
+                  {aboutSubItems.map((subItem, subIndex) => (
+                    <Link
+                      key={subItem.label}
+                      to={subItem.href}
+                      onClick={() => setAboutDropdownOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-primary hover:bg-primary/5 transition-colors"
+                      style={{
+                        animationDelay: `${subIndex * 50}ms`,
+                      }}
+                    >
+                      <subItem.icon className="w-4 h-4 text-primary/60" />
+                      {subItem.label}
+                    </Link>
+                  ))}
                 </div>
-              ) : (
-                <Link
-                  key={item.labelKey}
-                  to={item.href}
-                  className={`relative flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
-                    isActive(item.href)
-                      ? "bg-primary/10 text-primary shadow-sm"
-                      : "text-foreground/80 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_15px_hsl(155_100%_21%/0.15)]"
-                  } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
-                  style={{ 
-                    transitionDelay: isVisible ? `${150 + index * 50}ms` : '0ms',
-                  }}
-                >
-                  <item.icon className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
-                  {t(item.labelKey)}
-                </Link>
-              )
-            ))}
+              </div>
+            </div>
+
+            {/* Services dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => {
+                setServicesDropdownOpen(true);
+                setAboutDropdownOpen(false);
+                setMediaDropdownOpen(false);
+              }}
+              onMouseLeave={() => setServicesDropdownOpen(false)}
+            >
+              <button
+                type="button"
+                className={`relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  isServicesActive
+                    ? "bg-primary/10 text-primary shadow-sm"
+                    : "text-foreground/80 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_15px_hsl(155_100%_21%/0.15)]"
+                } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
+                style={{
+                  transitionDelay: isVisible ? "200ms" : "0ms",
+                }}
+              >
+                <FileText className="w-4 h-4" />
+                {t("nav.services")}
+                <ChevronDown
+                  className={`w-3 h-3 transition-transform duration-200 ${
+                    servicesDropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              <div
+                className={`absolute top-full left-0 mt-2 w-56 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-xl overflow-hidden transition-all duration-200 ${
+                  servicesDropdownOpen
+                    ? "opacity-100 visible translate-y-0"
+                    : "opacity-0 invisible -translate-y-2"
+                }`}
+                style={{
+                  backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
+                }}
+              >
+                <div className="py-2">
+                  {servicesSubItems.map((subItem, subIndex) => (
+                    <Link
+                      key={subItem.label}
+                      to={subItem.href}
+                      onClick={() => setServicesDropdownOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-primary hover:bg-primary/5 transition-colors"
+                      style={{
+                        animationDelay: `${subIndex * 50}ms`,
+                      }}
+                    >
+                      <subItem.icon className="w-4 h-4 text-primary/60" />
+                      {subItem.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* E-Visa direct link */}
+            <Link
+              to="/e-visa"
+              className={`relative flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                isEVisaActive
+                  ? "bg-primary/10 text-primary shadow-sm"
+                  : "text-foreground/80 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_15px_hsl(155_100%_21%/0.15)]"
+              } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
+              style={{
+                transitionDelay: isVisible ? "250ms" : "0ms",
+              }}
+            >
+              <Globe2 className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
+              {t("E-Visa")}
+            </Link>
+
+            {/* Media dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => {
+                setMediaDropdownOpen(true);
+                setAboutDropdownOpen(false);
+                setServicesDropdownOpen(false);
+              }}
+              onMouseLeave={() => setMediaDropdownOpen(false)}
+            >
+              <button
+                type="button"
+                className={`relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  isMediaActive
+                    ? "bg-primary/10 text-primary shadow-sm"
+                    : "text-foreground/80 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_15px_hsl(155_100%_21%/0.15)]"
+                } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
+                style={{
+                  transitionDelay: isVisible ? "300ms" : "0ms",
+                }}
+              >
+                <Newspaper className="w-4 h-4" />
+                {t("Media")}
+                <ChevronDown
+                  className={`w-3 h-3 transition-transform duration-200 ${
+                    mediaDropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              <div
+                className={`absolute top-full left-0 mt-2 w-56 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-xl overflow-hidden transition-all duration-200 ${
+                  mediaDropdownOpen
+                    ? "opacity-100 visible translate-y-0"
+                    : "opacity-0 invisible -translate-y-2"
+                }`}
+                style={{
+                  backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
+                }}
+              >
+                <div className="py-2">
+                  {mediaSubItems.map((subItem, subIndex) => (
+                    <Link
+                      key={subItem.label}
+                      to={subItem.href}
+                      onClick={() => setMediaDropdownOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-primary hover:bg-primary/5 transition-colors"
+                      style={{
+                        animationDelay: `${subIndex * 50}ms`,
+                      }}
+                    >
+                      <subItem.icon className="w-4 h-4 text-primary/60" />
+                      {subItem.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Resources link */}
+            <Link
+              to="/resources"
+              className={`relative flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                isResourcesActive
+                  ? "bg-primary/10 text-primary shadow-sm"
+                  : "text-foreground/80 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_15px_hsl(155_100%_21%/0.15)]"
+              } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
+              style={{
+                transitionDelay: isVisible ? "350ms" : "0ms",
+              }}
+            >
+              <HelpCircle className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
+              {t("nav.resources")}
+            </Link>
+
+            {/* Contact link */}
+            <Link
+              to="/contact"
+              className={`relative flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                isContactActive
+                  ? "bg-primary/10 text-primary shadow-sm"
+                  : "text-foreground/80 hover:text-primary hover:bg-primary/5 hover:shadow-[0_0_15px_hsl(155_100%_21%/0.15)]"
+              } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
+              style={{
+                transitionDelay: isVisible ? "400ms" : "0ms",
+              }}
+            >
+              <Phone className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
+              {t("nav.contact")}
+            </Link>
           </div>
 
           {/* Search & CTA */}
@@ -263,58 +431,199 @@ export function Navigation() {
             </div>
 
             <div className="space-y-2">
-              {navItems.map((item, index) => (
-                item.hasDropdown ? (
-                  <div key={item.labelKey}>
-                    <button
-                      onClick={() => setMobileAboutExpanded(!mobileAboutExpanded)}
-                      className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                        isActive(item.href)
-                          ? "bg-primary/10 text-primary shadow-sm"
-                          : "text-foreground hover:bg-muted"
+              {/* About group */}
+              <div>
+                <button
+                  onClick={() => setMobileAboutExpanded(!mobileAboutExpanded)}
+                  className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                    isAboutActive
+                      ? "bg-primary/10 text-primary shadow-sm"
+                      : "text-foreground hover:bg-muted"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Building2
+                      className={`w-5 h-5 ${
+                        isAboutActive ? "text-primary" : "text-primary/60"
                       }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <item.icon className={`w-5 h-5 ${isActive(item.href) ? "text-primary" : "text-primary/60"}`} />
-                        <span className="font-medium">{t(item.labelKey)}</span>
-                      </div>
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileAboutExpanded ? "rotate-180" : ""}`} />
-                    </button>
-                    
-                    {/* Mobile Dropdown */}
-                    <div className={`overflow-hidden transition-all duration-300 ${mobileAboutExpanded ? "max-h-96 mt-1" : "max-h-0"}`}>
-                      <div className="pl-4 space-y-1">
-                        {aboutSubItems.map((subItem) => (
-                          <Link
-                            key={subItem.label}
-                            to={subItem.href}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-foreground/70 hover:text-primary hover:bg-primary/5 transition-colors"
-                          >
-                            <subItem.icon className="w-4 h-4 text-primary/50" />
-                            {subItem.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
+                    />
+                    <span className="font-medium">{t("nav.about")}</span>
                   </div>
-                ) : (
-                  <Link
-                    key={item.labelKey}
-                    to={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 animate-fade-up active:scale-[0.98] ${
-                      isActive(item.href)
-                        ? "bg-primary/10 text-primary shadow-sm"
-                        : "text-foreground hover:bg-muted"
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      mobileAboutExpanded ? "rotate-180" : ""
                     }`}
-                    style={{ animationDelay: `${index * 0.05}s` }}
-                  >
-                    <item.icon className={`w-5 h-5 ${isActive(item.href) ? "text-primary" : "text-primary/60"}`} />
-                    <span className="font-medium">{t(item.labelKey)}</span>
-                  </Link>
-                )
-              ))}
+                  />
+                </button>
+
+                <div
+                  className={`overflow-hidden transition-all duration-300 ${
+                    mobileAboutExpanded ? "max-h-96 mt-1" : "max-h-0"
+                  }`}
+                >
+                  <div className="pl-4 space-y-1">
+                    {aboutSubItems.map((subItem) => (
+                      <Link
+                        key={subItem.label}
+                        to={subItem.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-foreground/70 hover:text-primary hover:bg-primary/5 transition-colors"
+                      >
+                        <subItem.icon className="w-4 h-4 text-primary/50" />
+                        {subItem.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Services group */}
+              <div>
+                <button
+                  onClick={() =>
+                    setMobileServicesExpanded(!mobileServicesExpanded)
+                  }
+                  className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                    isServicesActive
+                      ? "bg-primary/10 text-primary shadow-sm"
+                      : "text-foreground hover:bg-muted"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <FileText
+                      className={`w-5 h-5 ${
+                        isServicesActive ? "text-primary" : "text-primary/60"
+                      }`}
+                    />
+                    <span className="font-medium">{t("nav.services")}</span>
+                  </div>
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      mobileServicesExpanded ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                <div
+                  className={`overflow-hidden transition-all duration-300 ${
+                    mobileServicesExpanded ? "max-h-96 mt-1" : "max-h-0"
+                  }`}
+                >
+                  <div className="pl-4 space-y-1">
+                    {servicesSubItems.map((subItem) => (
+                      <Link
+                        key={subItem.label}
+                        to={subItem.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-foreground/70 hover:text-primary hover:bg-primary/5 transition-colors"
+                      >
+                        <subItem.icon className="w-4 h-4 text-primary/50" />
+                        {subItem.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* E-Visa link */}
+              <Link
+                to="/e-visa"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 animate-fade-up active:scale-[0.98] ${
+                  isEVisaActive
+                    ? "bg-primary/10 text-primary shadow-sm"
+                    : "text-foreground hover:bg-muted"
+                }`}
+              >
+                <Globe2
+                  className={`w-5 h-5 ${
+                    isEVisaActive ? "text-primary" : "text-primary/60"
+                  }`}
+                />
+                <span className="font-medium">{t("E-Visa")}</span>
+              </Link>
+
+              {/* Media group */}
+              <div>
+                <button
+                  onClick={() => setMobileMediaExpanded(!mobileMediaExpanded)}
+                  className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                    isMediaActive
+                      ? "bg-primary/10 text-primary shadow-sm"
+                      : "text-foreground hover:bg-muted"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Newspaper
+                      className={`w-5 h-5 ${
+                        isMediaActive ? "text-primary" : "text-primary/60"
+                      }`}
+                    />
+                    <span className="font-medium">{t("Media")}</span>
+                  </div>
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      mobileMediaExpanded ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                <div
+                  className={`overflow-hidden transition-all duration-300 ${
+                    mobileMediaExpanded ? "max-h-96 mt-1" : "max-h-0"
+                  }`}
+                >
+                  <div className="pl-4 space-y-1">
+                    {mediaSubItems.map((subItem) => (
+                      <Link
+                        key={subItem.label}
+                        to={subItem.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-foreground/70 hover:text-primary hover:bg-primary/5 transition-colors"
+                      >
+                        <subItem.icon className="w-4 h-4 text-primary/50" />
+                        {subItem.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Resources link */}
+              <Link
+                to="/resources"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 animate-fade-up active:scale-[0.98] ${
+                  isResourcesActive
+                    ? "bg-primary/10 text-primary shadow-sm"
+                    : "text-foreground hover:bg-muted"
+                }`}
+              >
+                <HelpCircle
+                  className={`w-5 h-5 ${
+                    isResourcesActive ? "text-primary" : "text-primary/60"
+                  }`}
+                />
+                <span className="font-medium">{t("nav.resources")}</span>
+              </Link>
+
+              {/* Contact link */}
+              <Link
+                to="/contact"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 animate-fade-up active:scale-[0.98] ${
+                  isContactActive
+                    ? "bg-primary/10 text-primary shadow-sm"
+                    : "text-foreground hover:bg-muted"
+                }`}
+              >
+                <Phone
+                  className={`w-5 h-5 ${
+                    isContactActive ? "text-primary" : "text-primary/60"
+                  }`}
+                />
+                <span className="font-medium">{t("nav.contact")}</span>
+              </Link>
             </div>
 
             <div className="flex items-center gap-2 mt-6 pt-4 border-t border-border">
