@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/card";
 import { CheckCircle2, CreditCard, Globe2, ShieldCheck, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 declare global {
   interface Window {
@@ -189,10 +190,44 @@ const EVisa = () => {
           { display_name: "Travel Date", variable_name: "travel_date", value: values.travelDate },
         ],
       },
-      callback: (response: any) => {
+      callback: async (response: any) => {
         setIsPaying(false);
-        setTransactionRef(response.reference);
-        toast.success("Payment successful. Your e-visa application has been submitted.");
+        const paymentRef = response.reference;
+        
+        toast.loading("Verifying payment and submitting your application...");
+
+        try {
+          const { data, error } = await supabase.functions.invoke("verify-evisa-payment", {
+            body: {
+              nationality: values.nationality,
+              fullName: values.fullName,
+              email: values.email,
+              passportNumber: values.passportNumber,
+              travelDate: values.travelDate,
+              visaType: values.visaType,
+              purposeOfVisit: values.purposeOfVisit,
+              paymentReference: paymentRef,
+              visaFeeAmount: VISA_FEE_GHS,
+            },
+          });
+
+          if (error) {
+            console.error("Error verifying payment:", error);
+            toast.error("Payment verification failed. Please contact support with your payment reference: " + paymentRef);
+            return;
+          }
+
+          if (!data.success) {
+            toast.error(data.error || "Failed to submit application. Please contact support.");
+            return;
+          }
+
+          setTransactionRef(paymentRef);
+          toast.success(`Application submitted successfully! Your reference: ${data.referenceNumber}`);
+        } catch (err) {
+          console.error("Submission error:", err);
+          toast.error("An error occurred. Please contact support with your payment reference: " + paymentRef);
+        }
       },
       onClose: () => {
         setIsPaying(false);

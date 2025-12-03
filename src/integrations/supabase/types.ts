@@ -47,6 +47,66 @@ export type Database = {
         }
         Relationships: []
       }
+      evisa_applications: {
+        Row: {
+          application_status: string
+          email: string
+          full_name: string
+          id: string
+          metadata: Json | null
+          nationality: string
+          passport_number: string
+          payment_reference: string | null
+          payment_status: string
+          payment_verified_at: string | null
+          purpose_of_visit: string
+          reference_number: string
+          submitted_at: string
+          travel_date: string
+          updated_at: string
+          visa_fee_amount: number
+          visa_type: string
+        }
+        Insert: {
+          application_status?: string
+          email: string
+          full_name: string
+          id?: string
+          metadata?: Json | null
+          nationality: string
+          passport_number: string
+          payment_reference?: string | null
+          payment_status?: string
+          payment_verified_at?: string | null
+          purpose_of_visit: string
+          reference_number: string
+          submitted_at?: string
+          travel_date: string
+          updated_at?: string
+          visa_fee_amount: number
+          visa_type: string
+        }
+        Update: {
+          application_status?: string
+          email?: string
+          full_name?: string
+          id?: string
+          metadata?: Json | null
+          nationality?: string
+          passport_number?: string
+          payment_reference?: string | null
+          payment_status?: string
+          payment_verified_at?: string | null
+          purpose_of_visit?: string
+          reference_number?: string
+          submitted_at?: string
+          travel_date?: string
+          updated_at?: string
+          visa_fee_amount?: number
+          visa_type?: string
+        }
+        Relationships: []
+      }
       leadership_profiles: {
         Row: {
           created_at: string
