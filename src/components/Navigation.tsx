@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
-import { Menu, X, Home, Building2, FileText, Stamp, Newspaper, Phone, HelpCircle, Search, ChevronDown, Shield, Calendar, Crown, Briefcase, MapPin, Camera } from "lucide-react";
+import { Menu, X, Home, Building2, FileText, Stamp, Newspaper, Phone, HelpCircle, Search, ChevronDown, Shield, Calendar, Crown, Briefcase, MapPin, Camera, Globe2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SearchModal } from "./SearchModal";
 import { DarkModeToggle } from "./DarkModeToggle";
@@ -20,6 +20,7 @@ const aboutSubItems = [
 const navItems = [
   { labelKey: "nav.home", href: "/", icon: Home },
   { labelKey: "nav.about", href: "/about", icon: Building2, hasDropdown: true },
+  { labelKey: "E-Visa", href: "/e-visa", icon: Globe2 },
   { labelKey: "nav.services", href: "/services", icon: FileText },
   { labelKey: "nav.permits", href: "/permits", icon: Stamp },
   { labelKey: "nav.news", href: "/news", icon: Newspaper },
