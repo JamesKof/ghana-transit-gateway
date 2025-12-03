@@ -28,7 +28,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CheckCircle2, CreditCard, Globe2, ShieldCheck, ArrowRight } from "lucide-react";
+import { CheckCircle2, CreditCard, Globe2, ShieldCheck, ArrowRight, Upload, FileText, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -103,6 +103,8 @@ const EVisa = () => {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [isPaying, setIsPaying] = useState(false);
   const [transactionRef, setTransactionRef] = useState<string | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<EVisaFormValues>({
     resolver: zodResolver(eVisaSchema),
@@ -154,9 +156,42 @@ const EVisa = () => {
     ]);
 
     if (valid) {
+      // Check if files are uploaded
+      if (uploadedFiles.length === 0) {
+        toast.error("Please upload at least one document (passport scan or supporting document)");
+        return;
+      }
+      
       setStep(3);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newFiles = Array.from(files);
+    const validFiles = newFiles.filter(file => {
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+      
+      if (file.size > maxSize) {
+        toast.error(`${file.name} is too large. Maximum size is 5MB.`);
+        return false;
+      }
+      if (!allowedTypes.includes(file.type)) {
+        toast.error(`${file.name} has an invalid type. Only JPG, PNG, and PDF are allowed.`);
+        return false;
+      }
+      return true;
+    });
+
+    setUploadedFiles(prev => [...prev, ...validFiles]);
+  };
+
+  const removeFile = (index: number) => {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const handlePayWithPaystack = async () => {
@@ -194,9 +229,33 @@ const EVisa = () => {
         setIsPaying(false);
         const paymentRef = response.reference;
         
-        toast.loading("Verifying payment and submitting your application...");
+        toast.loading("Uploading documents and verifying payment...");
 
         try {
+          // Upload files to storage first
+          const documentUrls: string[] = [];
+          setIsUploading(true);
+
+          for (const file of uploadedFiles) {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const filePath = `${paymentRef}/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+              .from('evisa-documents')
+              .upload(filePath, file);
+
+            if (uploadError) {
+              console.error('Upload error:', uploadError);
+              throw new Error(`Failed to upload ${file.name}`);
+            }
+
+            documentUrls.push(filePath);
+          }
+
+          setIsUploading(false);
+
+          // Now submit the application with document URLs
           const { data, error } = await supabase.functions.invoke("verify-evisa-payment", {
             body: {
               nationality: values.nationality,
@@ -208,6 +267,7 @@ const EVisa = () => {
               purposeOfVisit: values.purposeOfVisit,
               paymentReference: paymentRef,
               visaFeeAmount: VISA_FEE_GHS,
+              documentUrls,
             },
           });
 
@@ -227,6 +287,8 @@ const EVisa = () => {
         } catch (err) {
           console.error("Submission error:", err);
           toast.error("An error occurred. Please contact support with your payment reference: " + paymentRef);
+        } finally {
+          setIsUploading(false);
         }
       },
       onClose: () => {
@@ -474,6 +536,64 @@ const EVisa = () => {
                       </FormItem>
                     )}
                   />
+
+                  {/* Document Upload Section */}
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium">Required Documents</label>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Upload your passport bio-data page and any supporting documents (Max 5MB per file, JPG/PNG/PDF only)
+                      </p>
+                    </div>
+
+                    <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
+                      <Upload className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
+                      <label htmlFor="file-upload" className="cursor-pointer">
+                        <span className="text-sm font-medium text-primary hover:underline">
+                          Click to upload
+                        </span>
+                        <span className="text-sm text-muted-foreground"> or drag and drop</span>
+                      </label>
+                      <input
+                        id="file-upload"
+                        type="file"
+                        className="hidden"
+                        multiple
+                        accept="image/jpeg,image/png,image/jpg,application/pdf"
+                        onChange={handleFileSelect}
+                      />
+                      <p className="text-xs text-muted-foreground mt-2">
+                        JPG, PNG or PDF (max 5MB per file)
+                      </p>
+                    </div>
+
+                    {uploadedFiles.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium">{uploadedFiles.length} file(s) selected:</p>
+                        {uploadedFiles.map((file, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                            <div className="flex items-center gap-3">
+                              <FileText className="w-5 h-5 text-primary" />
+                              <div>
+                                <p className="text-sm font-medium">{file.name}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {(file.size / 1024 / 1024).toFixed(2)} MB
+                                </p>
+                              </div>
+                            </div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeFile(index)}
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
                 <CardFooter className="flex justify-between gap-3 flex-wrap">
                   <Button type="button" variant="outline" onClick={() => setStep(1)}>

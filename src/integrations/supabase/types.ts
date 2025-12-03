@@ -50,6 +50,7 @@ export type Database = {
       evisa_applications: {
         Row: {
           application_status: string
+          document_urls: Json
           email: string
           full_name: string
           id: string
@@ -69,6 +70,7 @@ export type Database = {
         }
         Insert: {
           application_status?: string
+          document_urls?: Json
           email: string
           full_name: string
           id?: string
@@ -88,6 +90,7 @@ export type Database = {
         }
         Update: {
           application_status?: string
+          document_urls?: Json
           email?: string
           full_name?: string
           id?: string

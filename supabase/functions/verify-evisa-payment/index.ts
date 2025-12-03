@@ -20,6 +20,7 @@ interface EVisaSubmissionRequest {
   purposeOfVisit: string;
   paymentReference: string;
   visaFeeAmount: number;
+  documentUrls?: string[];
 }
 
 interface PaystackVerifyResponse {
@@ -85,6 +86,7 @@ const handler = async (req: Request): Promise<Response> => {
       purposeOfVisit,
       paymentReference,
       visaFeeAmount,
+      documentUrls = [],
     } = payload;
 
     // Validate required fields
@@ -132,6 +134,7 @@ const handler = async (req: Request): Promise<Response> => {
         payment_reference: paymentReference,
         payment_verified_at: new Date().toISOString(),
         application_status: "submitted",
+        document_urls: documentUrls,
         metadata: {
           paystack_transaction_id: verificationResult.data.id,
           paid_amount_ghs: paidAmountInGHS,
@@ -148,6 +151,34 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log("E-visa application created successfully:", application.id);
+
+    // Send email notifications
+    try {
+      console.log("Sending email notifications...");
+      const notificationResponse = await fetch(`${SUPABASE_URL}/functions/v1/send-evisa-notification`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        },
+        body: JSON.stringify({
+          applicantEmail: email,
+          applicantName: fullName,
+          referenceNumber,
+          visaType,
+          travelDate,
+        }),
+      });
+
+      if (!notificationResponse.ok) {
+        console.error("Failed to send notification emails:", await notificationResponse.text());
+      } else {
+        console.log("Email notifications sent successfully");
+      }
+    } catch (emailError) {
+      console.error("Error sending email notifications:", emailError);
+      // Don't fail the application if emails fail
+    }
 
     return new Response(
       JSON.stringify({
