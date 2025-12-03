@@ -33,3 +33,6 @@ enable_confirmations = false
 
 [functions.send-notification-email]
 verify_jwt = false
+
+[functions.verify-evisa-payment]
+verify_jwt = false
