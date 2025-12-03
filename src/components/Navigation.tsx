@@ -158,7 +158,7 @@ export function Navigation() {
               </button>
 
               <div
-                className={`absolute top-full left-0 mt-2 w-56 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-xl overflow-hidden transition-all duration-200 ${
+                className={`absolute top-full left-0 mt-2 w-72 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-xl overflow-hidden transition-all duration-200 ${
                   aboutDropdownOpen
                     ? "opacity-100 visible translate-y-0"
                     : "opacity-0 invisible -translate-y-2"
@@ -168,21 +168,41 @@ export function Navigation() {
                   WebkitBackdropFilter: "blur(20px)",
                 }}
               >
-                <div className="py-2">
-                  {aboutSubItems.map((subItem, subIndex) => (
-                    <Link
-                      key={subItem.label}
-                      to={subItem.href}
-                      onClick={() => setAboutDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-primary hover:bg-primary/5 transition-colors"
-                      style={{
-                        animationDelay: `${subIndex * 50}ms`,
-                      }}
-                    >
-                      <subItem.icon className="w-4 h-4 text-primary/60" />
-                      {subItem.label}
-                    </Link>
-                  ))}
+                <div className="p-3">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-3 py-2">
+                    About GIS
+                  </p>
+                  <div className="space-y-1">
+                    {aboutSubItems.map((subItem, subIndex) => (
+                      <Link
+                        key={subItem.label}
+                        to={subItem.href}
+                        onClick={() => setAboutDropdownOpen(false)}
+                        className={`flex items-start gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-primary/5 group ${
+                          location.pathname + location.search === subItem.href
+                            ? "bg-primary/10 text-primary"
+                            : "text-foreground/80 hover:text-primary"
+                        }`}
+                        style={{
+                          animationDelay: `${subIndex * 30}ms`,
+                        }}
+                      >
+                        <subItem.icon className="w-4 h-4 mt-0.5 text-primary/60 group-hover:text-primary transition-colors flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium">{subItem.label}</p>
+                          <p className="text-xs text-muted-foreground line-clamp-1">
+                            {subItem.label === "Overview" && "Learn about our mission"}
+                            {subItem.label === "History" && "Our journey since inception"}
+                            {subItem.label === "Structure" && "Organizational hierarchy"}
+                            {subItem.label === "Leadership" && "Meet our executive team"}
+                            {subItem.label === "Directorates" && "Key operational units"}
+                            {subItem.label === "Regional Commands" && "18 regional offices"}
+                            {subItem.label === "Leadership Profiles" && "Detailed leader bios"}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -218,7 +238,7 @@ export function Navigation() {
               </button>
 
               <div
-                className={`absolute top-full left-0 mt-2 w-56 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-xl overflow-hidden transition-all duration-200 ${
+                className={`absolute top-full left-0 mt-2 w-64 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-xl overflow-hidden transition-all duration-200 ${
                   servicesDropdownOpen
                     ? "opacity-100 visible translate-y-0"
                     : "opacity-0 invisible -translate-y-2"
@@ -228,21 +248,36 @@ export function Navigation() {
                   WebkitBackdropFilter: "blur(20px)",
                 }}
               >
-                <div className="py-2">
-                  {servicesSubItems.map((subItem, subIndex) => (
-                    <Link
-                      key={subItem.label}
-                      to={subItem.href}
-                      onClick={() => setServicesDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-primary hover:bg-primary/5 transition-colors"
-                      style={{
-                        animationDelay: `${subIndex * 50}ms`,
-                      }}
-                    >
-                      <subItem.icon className="w-4 h-4 text-primary/60" />
-                      {subItem.label}
-                    </Link>
-                  ))}
+                <div className="p-3">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-3 py-2">
+                    Our Services
+                  </p>
+                  <div className="space-y-1">
+                    {servicesSubItems.map((subItem, subIndex) => (
+                      <Link
+                        key={subItem.label}
+                        to={subItem.href}
+                        onClick={() => setServicesDropdownOpen(false)}
+                        className={`flex items-start gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-primary/5 group ${
+                          location.pathname === subItem.href
+                            ? "bg-primary/10 text-primary"
+                            : "text-foreground/80 hover:text-primary"
+                        }`}
+                        style={{
+                          animationDelay: `${subIndex * 30}ms`,
+                        }}
+                      >
+                        <subItem.icon className="w-4 h-4 mt-0.5 text-primary/60 group-hover:text-primary transition-colors flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium">{subItem.label}</p>
+                          <p className="text-xs text-muted-foreground line-clamp-1">
+                            {subItem.label === "All Services" && "Comprehensive service listing"}
+                            {subItem.label === "Permits & Passes" && "Apply for permits online"}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -294,7 +329,7 @@ export function Navigation() {
               </button>
 
               <div
-                className={`absolute top-full left-0 mt-2 w-56 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-xl overflow-hidden transition-all duration-200 ${
+                className={`absolute top-full left-0 mt-2 w-64 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-xl overflow-hidden transition-all duration-200 ${
                   mediaDropdownOpen
                     ? "opacity-100 visible translate-y-0"
                     : "opacity-0 invisible -translate-y-2"
@@ -304,21 +339,36 @@ export function Navigation() {
                   WebkitBackdropFilter: "blur(20px)",
                 }}
               >
-                <div className="py-2">
-                  {mediaSubItems.map((subItem, subIndex) => (
-                    <Link
-                      key={subItem.label}
-                      to={subItem.href}
-                      onClick={() => setMediaDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-primary hover:bg-primary/5 transition-colors"
-                      style={{
-                        animationDelay: `${subIndex * 50}ms`,
-                      }}
-                    >
-                      <subItem.icon className="w-4 h-4 text-primary/60" />
-                      {subItem.label}
-                    </Link>
-                  ))}
+                <div className="p-3">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-3 py-2">
+                    Media Center
+                  </p>
+                  <div className="space-y-1">
+                    {mediaSubItems.map((subItem, subIndex) => (
+                      <Link
+                        key={subItem.label}
+                        to={subItem.href}
+                        onClick={() => setMediaDropdownOpen(false)}
+                        className={`flex items-start gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-primary/5 group ${
+                          location.pathname === subItem.href
+                            ? "bg-primary/10 text-primary"
+                            : "text-foreground/80 hover:text-primary"
+                        }`}
+                        style={{
+                          animationDelay: `${subIndex * 30}ms`,
+                        }}
+                      >
+                        <subItem.icon className="w-4 h-4 mt-0.5 text-primary/60 group-hover:text-primary transition-colors flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium">{subItem.label}</p>
+                          <p className="text-xs text-muted-foreground line-clamp-1">
+                            {subItem.label === "News & Updates" && "Latest announcements"}
+                            {subItem.label === "Photo Gallery" && "Visual highlights"}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
