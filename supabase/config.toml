@@ -36,3 +36,12 @@ verify_jwt = false
 
 [functions.verify-evisa-payment]
 verify_jwt = false
+
+[functions.send-evisa-notification]
+verify_jwt = false
+
+[functions.send-evisa-reminder]
+verify_jwt = false
+
+[functions.bulk-download-documents]
+verify_jwt = false

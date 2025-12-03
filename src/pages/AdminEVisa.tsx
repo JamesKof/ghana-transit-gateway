@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Search, FileText, CheckCircle2, XCircle, Clock, Eye, Download, FileImage } from "lucide-react";
+import { Search, FileText, CheckCircle2, XCircle, Clock, Eye, Download, FileImage, Package } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -35,6 +35,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface EVisaApplication {
   id: string;
@@ -68,6 +69,8 @@ const AdminEVisa = () => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [viewingDocument, setViewingDocument] = useState<string | null>(null);
   const [documentViewerOpen, setDocumentViewerOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isDownloadingBulk, setIsDownloadingBulk] = useState(false);
 
   useEffect(() => {
     checkAdminAccess();
@@ -242,6 +245,68 @@ const AdminEVisa = () => {
     }
   };
 
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredApplications.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredApplications.map(app => app.id)));
+    }
+  };
+
+  const toggleSelection = (id: string) => {
+    const newSet = new Set(selectedIds);
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
+    }
+    setSelectedIds(newSet);
+  };
+
+  const handleBulkDownload = async () => {
+    if (selectedIds.size === 0) {
+      toast.error("Please select at least one application");
+      return;
+    }
+
+    setIsDownloadingBulk(true);
+    toast.loading("Preparing documents for download...");
+
+    try {
+      const response = await supabase.functions.invoke("bulk-download-documents", {
+        body: {
+          applicationIds: Array.from(selectedIds),
+        },
+      });
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      // Convert response to blob and download
+      const blob = new Blob([response.data], { type: 'application/zip' });
+      const url = URL.createObjectURL(blob);
+      const timestamp = new Date().toISOString().split('T')[0];
+      const filename = `evisa_documents_${timestamp}.zip`;
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast.success(`Downloaded documents from ${selectedIds.size} applications`);
+      setSelectedIds(new Set()); // Clear selection after download
+    } catch (error: any) {
+      console.error("Bulk download error:", error);
+      toast.error("Failed to download documents. Please try again.");
+    } finally {
+      setIsDownloadingBulk(false);
+    }
+  };
+
   return (
     <main className="pt-28 pb-16 min-h-screen bg-background">
       <section className="container max-w-7xl">
@@ -283,6 +348,32 @@ const AdminEVisa = () => {
               </Button>
             </div>
 
+            {/* Bulk Actions Bar */}
+            {selectedIds.size > 0 && (
+              <div className="flex items-center justify-between p-3 bg-primary/5 border border-primary/20 rounded-lg">
+                <p className="text-sm font-medium">
+                  {selectedIds.size} application{selectedIds.size > 1 ? 's' : ''} selected
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setSelectedIds(new Set())}
+                  >
+                    Clear Selection
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={handleBulkDownload}
+                    disabled={isDownloadingBulk}
+                  >
+                    <Package className="w-4 h-4 mr-2" />
+                    {isDownloadingBulk ? "Preparing..." : "Download All Documents"}
+                  </Button>
+                </div>
+              </div>
+            )}
+
             <div className="rounded-lg border">
               {loading ? (
                 <div className="p-8 text-center text-muted-foreground">Loading applications...</div>
@@ -296,6 +387,13 @@ const AdminEVisa = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead className="w-12">
+                        <Checkbox
+                          checked={selectedIds.size === filteredApplications.length && filteredApplications.length > 0}
+                          onCheckedChange={toggleSelectAll}
+                          aria-label="Select all"
+                        />
+                      </TableHead>
                       <TableHead>Reference</TableHead>
                       <TableHead>Applicant</TableHead>
                       <TableHead>Nationality</TableHead>
@@ -309,6 +407,13 @@ const AdminEVisa = () => {
                   <TableBody>
                     {filteredApplications.map((app) => (
                       <TableRow key={app.id}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedIds.has(app.id)}
+                            onCheckedChange={() => toggleSelection(app.id)}
+                            aria-label={`Select ${app.reference_number}`}
+                          />
+                        </TableCell>
                         <TableCell className="font-mono text-xs">{app.reference_number}</TableCell>
                         <TableCell>
                           <div className="font-medium">{app.full_name}</div>
