@@ -36,6 +36,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
 
 interface EVisaApplication {
   id: string;
@@ -71,6 +72,11 @@ const AdminEVisa = () => {
   const [documentViewerOpen, setDocumentViewerOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isDownloadingBulk, setIsDownloadingBulk] = useState(false);
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [emailTemplateType, setEmailTemplateType] = useState<"approved" | "rejected" | "docs_needed">("approved");
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailBody, setEmailBody] = useState("");
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   useEffect(() => {
     checkAdminAccess();
@@ -283,13 +289,12 @@ const AdminEVisa = () => {
         throw response.error;
       }
 
-      // Convert response to blob and download
-      const blob = new Blob([response.data], { type: 'application/zip' });
+      const blob = new Blob([response.data], { type: "application/zip" });
       const url = URL.createObjectURL(blob);
-      const timestamp = new Date().toISOString().split('T')[0];
+      const timestamp = new Date().toISOString().split("T")[0];
       const filename = `evisa_documents_${timestamp}.zip`;
-      
-      const a = document.createElement('a');
+
+      const a = document.createElement("a");
       a.href = url;
       a.download = filename;
       document.body.appendChild(a);
@@ -298,12 +303,83 @@ const AdminEVisa = () => {
       URL.revokeObjectURL(url);
 
       toast.success(`Downloaded documents from ${selectedIds.size} applications`);
-      setSelectedIds(new Set()); // Clear selection after download
+      setSelectedIds(new Set());
     } catch (error: any) {
       console.error("Bulk download error:", error);
       toast.error("Failed to download documents. Please try again.");
     } finally {
       setIsDownloadingBulk(false);
+    }
+  };
+
+  const getEmailTemplateDefaults = (
+    template: "approved" | "rejected" | "docs_needed",
+    app: EVisaApplication,
+  ) => {
+    const base = {
+      approved: {
+        subject: `Your Ghana E-Visa Application Approved - Ref ${app.reference_number}`,
+        body: `Dear ${app.full_name},\n\nWe are pleased to inform you that your Ghana e-visa application (reference ${app.reference_number}) has been APPROVED.\n\nVisa Type: ${app.visa_type}\nTravel Date: ${new Date(app.travel_date).toLocaleDateString("en-US")}\n\nPlease ensure you travel with all required documents used during your application.\n\nBest regards,\nGhana Immigration Service`,
+      },
+      rejected: {
+        subject: `Update on Your Ghana E-Visa Application - Ref ${app.reference_number}`,
+        body: `Dear ${app.full_name},\n\nWe regret to inform you that your Ghana e-visa application (reference ${app.reference_number}) has been REJECTED after careful review.\n\nIf you believe this decision was made in error or your circumstances have changed, you may submit a new application with updated information.\n\nBest regards,\nGhana Immigration Service`,
+      },
+      docs_needed: {
+        subject: `Additional Documents Required - E-Visa Ref ${app.reference_number}`,
+        body: `Dear ${app.full_name},\n\nDuring the review of your Ghana e-visa application (reference ${app.reference_number}), we identified that additional documents or clarifications are required to continue processing.\n\nPlease reply to this email or use the official GIS channels to provide the requested documents.\n\nBest regards,\nGhana Immigration Service`,
+      },
+    } as const;
+
+    return base[template];
+  };
+
+  const openEmailDialog = (template: "approved" | "rejected" | "docs_needed") => {
+    if (!selectedApplication) return;
+
+    const defaults = getEmailTemplateDefaults(template, selectedApplication);
+    setEmailTemplateType(template);
+    setEmailSubject(defaults.subject);
+    setEmailBody(defaults.body);
+    setEmailDialogOpen(true);
+  };
+
+  const handleSendEmail = async () => {
+    if (!selectedApplication) return;
+    if (!emailSubject.trim() || !emailBody.trim()) {
+      toast.error("Please provide both a subject and message body.");
+      return;
+    }
+
+    setIsSendingEmail(true);
+
+    try {
+      const { error } = await supabase.functions.invoke("send-notification-email", {
+        body: {
+          type: "status_update",
+          email: selectedApplication.email,
+          applicationRef: selectedApplication.reference_number,
+          data: {
+            subject: emailSubject.trim(),
+            message: emailBody.trim(),
+            applicantName: selectedApplication.full_name,
+            newStatus:
+              emailTemplateType === "docs_needed"
+                ? "Additional Information Required"
+                : emailTemplateType.charAt(0).toUpperCase() + emailTemplateType.slice(1),
+          },
+        },
+      });
+
+      if (error) throw error;
+
+      toast.success("Email notification sent to applicant");
+      setEmailDialogOpen(false);
+    } catch (error: any) {
+      console.error("Error sending email notification:", error);
+      toast.error("Failed to send email notification");
+    } finally {
+      setIsSendingEmail(false);
     }
   };
 
@@ -564,37 +640,144 @@ const AdminEVisa = () => {
                 </div>
               </div>
 
-              <div className="border-t pt-4">
-                <p className="text-sm font-medium mb-3">Update Application Status</p>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => updateApplicationStatus(selectedApplication.id, "submitted")}
-                    disabled={selectedApplication.application_status === "submitted"}
-                  >
-                    Mark as Submitted
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="default"
-                    onClick={() => updateApplicationStatus(selectedApplication.id, "approved")}
-                    disabled={selectedApplication.application_status === "approved"}
-                  >
-                    Approve Application
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => updateApplicationStatus(selectedApplication.id, "rejected")}
-                    disabled={selectedApplication.application_status === "rejected"}
-                  >
-                    Reject Application
-                  </Button>
+              <div className="border-t pt-4 space-y-4">
+                <div>
+                  <p className="text-sm font-medium mb-3">Update Application Status</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => updateApplicationStatus(selectedApplication.id, "submitted")}
+                      disabled={selectedApplication.application_status === "submitted"}
+                    >
+                      Mark as Submitted
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="default"
+                      onClick={() => updateApplicationStatus(selectedApplication.id, "approved")}
+                      disabled={selectedApplication.application_status === "approved"}
+                    >
+                      Approve Application
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => updateApplicationStatus(selectedApplication.id, "rejected")}
+                      disabled={selectedApplication.application_status === "rejected"}
+                    >
+                      Reject Application
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Notify Applicant by Email</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => openEmailDialog("approved")}
+                    >
+                      Use "Approved" Template
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => openEmailDialog("rejected")}
+                    >
+                      Use "Rejected" Template
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => openEmailDialog("docs_needed")}
+                    >
+                      Request Additional Documents
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Templates can be customized before sending and will be emailed to {selectedApplication.email}.
+                  </p>
                 </div>
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Email Notification Dialog */}
+      <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Send Email Notification</DialogTitle>
+            <DialogDescription>
+              Customize and send an email update to the applicant about their e-visa application.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Template</p>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  variant={emailTemplateType === "approved" ? "default" : "outline"}
+                  onClick={() => selectedApplication && openEmailDialog("approved")}
+                >
+                  Approved
+                </Button>
+                <Button
+                  size="sm"
+                  variant={emailTemplateType === "rejected" ? "default" : "outline"}
+                  onClick={() => selectedApplication && openEmailDialog("rejected")}
+                >
+                  Rejected
+                </Button>
+                <Button
+                  size="sm"
+                  variant={emailTemplateType === "docs_needed" ? "default" : "outline"}
+                  onClick={() => selectedApplication && openEmailDialog("docs_needed")}
+                >
+                  Additional Docs Needed
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Subject</p>
+              <Input
+                value={emailSubject}
+                onChange={(e) => setEmailSubject(e.target.value)}
+                placeholder="Email subject"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Message</p>
+              <Textarea
+                value={emailBody}
+                onChange={(e) => setEmailBody(e.target.value)}
+                rows={8}
+                placeholder="Write your message here..."
+              />
+              <p className="text-xs text-muted-foreground">
+                This email will be sent to the applicant's address associated with the selected application.
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setEmailDialogOpen(false)}
+                disabled={isSendingEmail}
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleSendEmail} disabled={isSendingEmail}>
+                {isSendingEmail ? "Sending..." : "Send Email"}
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -610,7 +793,7 @@ const AdminEVisa = () => {
           <div className="p-6 pt-4 overflow-auto max-h-[calc(90vh-120px)]">
             {viewingDocument && (
               <div className="bg-muted/30 rounded-lg p-4 flex items-center justify-center min-h-[400px]">
-                {viewingDocument.toLowerCase().includes('.pdf') ? (
+                {viewingDocument.toLowerCase().includes(".pdf") ? (
                   <iframe
                     src={viewingDocument}
                     className="w-full h-[600px] rounded border"
