@@ -28,7 +28,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CheckCircle2, CreditCard, Globe2, ShieldCheck, ArrowRight, Upload, FileText, X } from "lucide-react";
+import { CheckCircle2, CreditCard, Globe2, ShieldCheck, ArrowRight, Upload, FileText, X, Search } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -649,16 +649,34 @@ const EVisa = () => {
                   </div>
 
                   {transactionRef && (
-                    <div className="flex items-start gap-3 rounded-xl border border-emerald-500/40 bg-emerald-500/5 p-4 text-sm">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500 mt-0.5" />
-                      <div>
-                        <p className="font-semibold text-foreground mb-1">Payment successful</p>
-                        <p className="text-muted-foreground">
-                          Your e-visa application has been received. Keep this reference for your records:
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-3 rounded-xl border border-emerald-500/40 bg-emerald-500/5 p-4 text-sm">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-500 mt-0.5" />
+                        <div className="flex-1">
+                          <p className="font-semibold text-foreground mb-1">Payment successful</p>
+                          <p className="text-muted-foreground">
+                            Your e-visa application has been received. Keep this reference for your records:
+                          </p>
+                          <p className="mt-1 font-mono text-xs text-foreground bg-muted px-2 py-1 rounded inline-block">
+                            {transactionRef}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="p-4 rounded-lg border bg-muted/30">
+                        <h4 className="font-semibold mb-2 flex items-center gap-2">
+                          <Search className="w-4 h-4 text-primary" />
+                          Track Your Application
+                        </h4>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          You can check your application status anytime using your reference number.
                         </p>
-                        <p className="mt-1 font-mono text-xs text-foreground bg-muted px-2 py-1 rounded">
-                          {transactionRef}
-                        </p>
+                        <Button variant="outline" size="sm" asChild>
+                          <a href="/e-visa/status">
+                            Check Application Status
+                            <ArrowRight className="w-3 h-3 ml-2" />
+                          </a>
+                        </Button>
                       </div>
                     </div>
                   )}
