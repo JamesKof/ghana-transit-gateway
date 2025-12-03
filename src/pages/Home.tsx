@@ -29,18 +29,18 @@ const quickNavItems = [
     color: "bg-primary/10 text-primary",
   },
   {
+    icon: Globe,
+    titleKey: "E-Visa Status",
+    description: "Track your e-visa application with your reference number",
+    href: "/e-visa/status",
+    color: "bg-accent/10 text-accent",
+  },
+  {
     icon: FileText,
     titleKey: "nav.services",
     description: "Explore visa and permit services we offer",
     href: "/services",
     color: "bg-secondary/10 text-secondary",
-  },
-  {
-    icon: Globe,
-    titleKey: "nav.permits",
-    description: "View permit categories and requirements",
-    href: "/permits",
-    color: "bg-accent/10 text-accent",
   },
   {
     icon: Newspaper,

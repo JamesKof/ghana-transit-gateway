@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Search, FileText, CheckCircle2, XCircle, Clock, Eye } from "lucide-react";
+import { Search, FileText, CheckCircle2, XCircle, Clock, Eye, Download, FileImage } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -54,6 +54,7 @@ interface EVisaApplication {
   submitted_at: string;
   updated_at: string;
   metadata: any;
+  document_urls: any;
 }
 
 const AdminEVisa = () => {
@@ -65,6 +66,8 @@ const AdminEVisa = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedApplication, setSelectedApplication] = useState<EVisaApplication | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [viewingDocument, setViewingDocument] = useState<string | null>(null);
+  const [documentViewerOpen, setDocumentViewerOpen] = useState(false);
 
   useEffect(() => {
     checkAdminAccess();
@@ -196,6 +199,48 @@ const AdminEVisa = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
+
+  const viewDocument = async (filePath: string) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from('evisa-documents')
+        .createSignedUrl(filePath, 3600); // 1 hour expiry
+
+      if (error) throw error;
+
+      if (data?.signedUrl) {
+        setViewingDocument(data.signedUrl);
+        setDocumentViewerOpen(true);
+      }
+    } catch (error) {
+      console.error("Error viewing document:", error);
+      toast.error("Failed to load document");
+    }
+  };
+
+  const downloadDocument = async (filePath: string) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from('evisa-documents')
+        .download(filePath);
+
+      if (error) throw error;
+
+      const url = URL.createObjectURL(data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filePath.split('/').pop() || 'document';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast.success("Document downloaded successfully");
+    } catch (error) {
+      console.error("Error downloading document:", error);
+      toast.error("Failed to download document");
+    }
+  };
 
   return (
     <main className="pt-28 pb-16 min-h-screen bg-background">
@@ -361,6 +406,48 @@ const AdminEVisa = () => {
                 <p className="text-sm bg-muted/50 p-3 rounded-lg">{selectedApplication.purpose_of_visit}</p>
               </div>
 
+              {/* Document Viewer */}
+              {selectedApplication.document_urls && selectedApplication.document_urls.length > 0 && (
+                <div className="border-t pt-4">
+                  <p className="text-sm font-medium mb-3">Uploaded Documents ({selectedApplication.document_urls.length})</p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {selectedApplication.document_urls.map((docPath, index) => {
+                      const fileName = docPath.split('/').pop() || `Document ${index + 1}`;
+                      const fileExt = fileName.split('.').pop()?.toLowerCase();
+                      const isPDF = fileExt === 'pdf';
+                      
+                      return (
+                        <div key={index} className="flex items-center gap-2 p-3 border rounded-lg bg-muted/30">
+                          <FileImage className="w-5 h-5 text-primary flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">{fileName}</p>
+                            <p className="text-xs text-muted-foreground">{isPDF ? 'PDF Document' : 'Image File'}</p>
+                          </div>
+                          <div className="flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => viewDocument(docPath)}
+                              title="Preview"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => downloadDocument(docPath)}
+                              title="Download"
+                            >
+                              <Download className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               <div className="grid gap-4 sm:grid-cols-2 text-xs text-muted-foreground">
                 <div>
                   <p className="font-medium mb-1">Submitted</p>
@@ -403,6 +490,37 @@ const AdminEVisa = () => {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Document Viewer Dialog */}
+      <Dialog open={documentViewerOpen} onOpenChange={setDocumentViewerOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+          <DialogHeader className="p-6 pb-0">
+            <DialogTitle>Document Preview</DialogTitle>
+            <DialogDescription>
+              Preview uploaded passport scan or supporting document
+            </DialogDescription>
+          </DialogHeader>
+          <div className="p-6 pt-4 overflow-auto max-h-[calc(90vh-120px)]">
+            {viewingDocument && (
+              <div className="bg-muted/30 rounded-lg p-4 flex items-center justify-center min-h-[400px]">
+                {viewingDocument.toLowerCase().includes('.pdf') ? (
+                  <iframe
+                    src={viewingDocument}
+                    className="w-full h-[600px] rounded border"
+                    title="PDF Document Viewer"
+                  />
+                ) : (
+                  <img
+                    src={viewingDocument}
+                    alt="Uploaded document"
+                    className="max-w-full h-auto rounded shadow-lg"
+                  />
+                )}
+              </div>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </main>
